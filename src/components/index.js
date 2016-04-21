@@ -53,13 +53,18 @@ class ComponentLoader {
 		this.getFiles(
 			__dirname,
 			(file)=>{
-				return file.indexOf(".") === -1 && file !== 'app';
+				if(file.indexOf(".") !== -1) {
+					return false;
+				}
+				if(file == 'app') {
+					return true;
+				}
+				
+				return _.has(that.config.components, file)
 			},
 			(file)=>{
-				if(_.has(that.config.components, file)) {
-					that.loadDependancy(file);
-					that.moveComponentToBase(file);
-				}
+				that.loadDependancy(file);
+				that.moveComponentToBase(file);			
 			}
 		);
 
