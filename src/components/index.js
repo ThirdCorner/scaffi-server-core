@@ -19,6 +19,9 @@ class ComponentLoader {
 			throw new Error("You must provide a baseDir property for your project");
 		}
 
+		console.log(args.config);
+		console.log("======================")
+
 		this.config = args.config;
 
 		this.loadAppComponent();
@@ -59,7 +62,8 @@ class ComponentLoader {
 				if(file == 'app') {
 					return true;
 				}
-				
+
+				console.log("HAS FILE: " + file, _.has(that.config.components, file))
 				return _.has(that.config.components, file)
 			},
 			(file)=>{
