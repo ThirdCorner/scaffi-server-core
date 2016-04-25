@@ -39,7 +39,7 @@ class Router extends AbstractComponent {
 		this.set(RouterInterface);		
 	}
 	run(app){
-		require(path.join(this.getBasePath(), 'routes'))(app);
+		require(path.join(this.getBasePath(), 'routes'))(app, this.get());
 
 
 		var router = express.Router();

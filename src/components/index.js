@@ -120,10 +120,14 @@ class ComponentLoader {
 		return {};
 	}
 	getFiles(dirName, filterFn, fileFn) {
-		fs
-			.readdirSync(dirName)
-			.filter(filterFn)
-			.forEach(fileFn);
+		try {
+			fs
+				.readdirSync(dirName)
+				.filter(filterFn)
+				.forEach(fileFn);
+		} catch(e){
+
+		};
 	}
 	loadDependancy(name, isComponent) {
 
