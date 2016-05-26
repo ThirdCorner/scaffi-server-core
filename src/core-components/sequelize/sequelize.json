@@ -1,0 +1,25 @@
+{
+	"dependencies": [],
+	"params": {
+		"public": {
+			"dialect": {
+				"type": "list",
+				"options": ["mysql", "mssql", "postgres", "sqlite", "mariadb"]
+			}
+		},
+		"private": {
+			"databaseName": {
+				"type": "text"
+			},
+			"username": {
+				"type": "text"
+			},
+			"password": {
+				"type": "text"
+			},
+			"host": {
+				"type": "text"
+			}
+		}
+	}
+}

@@ -1,0 +1,8 @@
+{
+	"dependencies": ["app", "sequelize"],
+	"params": {
+		"public": {},
+		"private": {}
+	}
+
+}

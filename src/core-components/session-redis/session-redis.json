@@ -1,0 +1,21 @@
+{
+	"dependencies": ["app", "redis-connect"],
+	"params": {
+		"public": {
+			"secretKey": {
+				"type": "text"
+			},
+			"resave": {
+				"type": "boolean",
+				"default": true
+			},
+			"saveUninitialized": {
+				"type": "boolean",
+				"default": true
+
+			}
+
+		},
+		"private": {}
+	}
+}

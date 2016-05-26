@@ -23,6 +23,12 @@ class AbstractComponent {
 			}, this);
 		}
 	}
+	getDependencies(){
+		return this.dependencies || [];
+	}
+	setDependencies(dependencies) {
+		this.dependencies = dependencies;
+	}
 	setBasePath(basePath){
 		this.basePath = basePath;
 	}
@@ -65,12 +71,6 @@ class AbstractComponent {
 	/*
 		Extend
 	 */
-	requiredComponents(){
-		return [];
-	}
-	requiredParams(){
-		return [];
-	}
 
 	setup(){}
 	run(){}

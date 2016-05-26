@@ -1,0 +1,16 @@
+{
+	"dependencies": ["app", "redis"],
+	"params": {
+		"public": {},
+		"private": {
+			"host": {
+				"type": "text",
+				"default": "localhost"
+			},
+			"port": {
+				"type": "number",
+				"default": 6379
+			}
+		}
+	}
+}

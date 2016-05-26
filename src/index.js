@@ -3,41 +3,37 @@
 import _ from 'lodash';
 import path from 'path';
 import fs from 'fs';
-import ComponentLoader from './components';
+import ComponentLoader from './core-components';
+
+import appRoot from 'app-root-path';
+var ScaffiConfig = require(path.join(appRoot.toString(), "scaffi-server.json"));
 
 class CoreLoader {
-	constructor(args) {
-		if(!args.config) {
-			throw new Error("You must pass in the location of the scaffi-server.json when you initialize the core");
+	constructor() {
+
+		/*
+			Get base path
+		 */
+		
+		if(!_.isObject(ScaffiConfig)) {
+			throw new Error("scaffi-server.json is not in the proper format. Is it in the basepath of your server app?");
 		}
 
-
-		this.basePath = path.dirname(args.config);
-		this.configPath = args.config;
+		this.basePath = appRoot.toString();
 		this.config = {};
-
 		this.loadConfig();
-
 		this.loadComponents();
 
 	}
 	loadConfig(){
 
-		try {
-			var config = require(this.configPath);
-		} catch(e){
-			console.log("Can't load scaffi-server.json config provided. Check the filepath in 'Error:'");
-			throw e;
-		}
-
-
-		if(!config.components) {
+		if(!ScaffiConfig.components) {
 			throw new Error("Your scaffi-server.json file is not in the proper format. Needs a components property.");
 		}
 
 		var required = {
 			app: {
-				port: 3000
+
 			},
 			server: {
 
@@ -48,31 +44,32 @@ class CoreLoader {
 
 		};
 		_.each(required, (obj, name)=>{
-			if(!_.has(config.components, name)) {
-				config.components[name] = obj;
+			if(!_.has(ScaffiConfig.components, name)) {
+				ScaffiConfig.components[name] = obj;
 			}
 		});
 
-		var componentsDir;
+		ScaffiConfig.components["app"].port = ScaffiConfig.config.serverLocalhostPort
+
+		var config = ScaffiConfig;
+
+		var privateConfig;
 		try{
-			componentsDir = fs.statSync(path.join(this.basePath, "config"));
+			privateConfig = require(path.join(appRoot.toString(), "scaffi-server.private.json"));
 		}catch(e){}
 
+		if(privateConfig && privateConfig.components){
+			_.each(privateConfig.components, (item, componentName) =>{
+				if(item && _.isObject(item)) {
+					_.each(item, (propValue, propName)=>{
+						if(!_.has(config.components,  componentName)){
+							config.components[componentName] = {};
+						}
 
-		var that = this;
-		if(componentsDir) {
-			fs
-				.readdirSync(path.join(this.basePath, "config"))
-				.filter((file)=> {return file.indexOf(".json") !== -1})
-				.forEach((file)=>{
-					var json = require(path.join(that.basePath, "config", file));
-					file = file.substr(0, file.indexOf(".json"));
-
-					config.components[file] = config.components[file] || {};
-					_.each(json, (value, key)=>{
-						config.components[file][key] = value;
-					}, this);
-				});
+						config.components[componentName][propName] = propValue;
+					});
+				}
+			})
 		}
 
 		this.config = config;
