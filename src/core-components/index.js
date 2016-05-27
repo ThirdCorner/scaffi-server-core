@@ -33,7 +33,7 @@ class ComponentLoader {
 
 			Need to load services with requiredComponents, then do sanity checks
 		 */
-		this.loadServices();
+		//this.loadServices();
 		this.runComponents();
 
 		console.log("==============================");
@@ -62,6 +62,9 @@ class ComponentLoader {
 					return false;
 				}
 
+				if(file == 'server') {
+					return true;
+				}
 
 				//console.log("HAS FILE: " + file, _.has(that.config.components, file))
 				return _.has(that.config.components, file)
@@ -75,19 +78,23 @@ class ComponentLoader {
 	}
 	loadExtendedComponents(){
 		var that = this;
-		this.getFiles(
-			that.customComponents,
-			(file)=> file.indexOf(".") === -1,
-			(file)=>{
-				/*
-				 We only want to load ones that are new. Extended components get loaded in the first read cycle
-				 */
-				if(!_.has(that.LoadManager._components, file)) {
-					that.loadDependancy(file, true);
-					that.moveComponentToBase(file);
+		try {
+			this.getFiles(
+				that.customComponents,
+				(file)=> file.indexOf(".") === -1,
+				(file)=> {
+					/*
+					 We only want to load ones that are new. Extended components get loaded in the first read cycle
+					 */
+					if (!_.has(that.LoadManager._components, file)) {
+						that.loadDependancy(file, true);
+						that.moveComponentToBase(file);
+					}
 				}
-			}
-		)
+			)
+		} catch(e){
+			console.log("No 'components' folder found at root so assuming no custom components needing to be loaded");
+		}
 	}
 	requiredSanityCheck(){
 		_.each(this.LoadManager._components, (component, name)=>{
@@ -126,7 +133,7 @@ class ComponentLoader {
 				.filter(filterFn)
 				.forEach(fileFn);
 		} catch(e){
-
+			throw e
 		};
 	}
 	loadDependancy(name, isCustomComponent) {
@@ -159,11 +166,11 @@ class ComponentLoader {
 
 
 
-		console.log("=============");
-		console.log(name);
-		console.log(this.customComponents)
-		console.log(this.componentsDir);
-		console.log("-------------");
+		// console.log("=============");
+		// console.log(name);
+		// console.log(this.customComponents)
+		// console.log(this.componentsDir);
+		// console.log("-------------");
 
 		this.LoadManager._components[name] = new extended.default(this.getComponentConfig(name), name);
 		this.LoadManager._components[name].setBasePath(this.baseDir);
@@ -212,6 +219,7 @@ class ComponentLoader {
 
 	}
 	callComponentFn(component, name, fnCall) {
+		
 		var requiredComponents = component.getDependencies();
 
 		var args = [];

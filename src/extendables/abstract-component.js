@@ -6,7 +6,6 @@ import _ from 'lodash';
 
 class AbstractComponent {
 	constructor(args, componentName) {
-		
 		this.params = {};
 		_.each(args, (value, key)=>{
 			this.params[key] = value;

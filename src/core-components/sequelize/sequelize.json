@@ -19,6 +19,9 @@
 			},
 			"host": {
 				"type": "text"
+			},
+			"port": {
+				"type": "number"
 			}
 		}
 	}

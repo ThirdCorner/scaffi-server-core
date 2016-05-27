@@ -3,7 +3,7 @@
 import AbstractService from '../../extendables/abstract-service';
 
 class NotifyService extends AbstractService{
-	requiredComponents(){
+	getDependencies(){
 		return ['socket-io'];
 	}
 	initialize(socket) {
