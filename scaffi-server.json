@@ -12,6 +12,9 @@
 		"routeLowercaseStandard": true
 	},
 	"components": {
-		"app": {}
+		"app": {},
+		"sequelize": {
+			"dialect": "mssql"
+		}
 	}
 }

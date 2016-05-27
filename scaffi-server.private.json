@@ -1,0 +1,10 @@
+{
+	"components": {
+		"sequelize": {
+			"database": "Test",
+			"username": "admin",
+			"password": "admin",
+			"host": "localhost:1433"
+		}
+	}
+}
