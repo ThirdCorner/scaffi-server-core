@@ -25,7 +25,7 @@ class Sequelize extends AbstractComponent {
 
 
 		if(this.getParam("sync") === true) {
-			db.connection.sync().then(()=>{
+			db.connection.sync({force: true}).then(()=>{
 				console.log("~~~ DB SYNCED ~~~");
 			});
 		}
