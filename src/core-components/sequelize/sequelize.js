@@ -22,6 +22,13 @@ class Sequelize extends AbstractComponent {
 		this.setupModels(db);
 		
 		this.set(db);
+
+
+		if(this.getParam("sync") === true) {
+			db.connection.sync().then(()=>{
+				console.log("~~~ DB SYNCED ~~~");
+			});
+		}
 	}
 	setupDatabase(){
 		var opts = {

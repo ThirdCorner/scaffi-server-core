@@ -1,11 +1,12 @@
 {
 	"components": {
 		"sequelize": {
-			"databaseName": "PASS-Wells",
+			"databaseName": "Test",
 			"username": "admin",
 			"password": "pass",
 			"port": 1433,
-			"host": "localhost"
+			"host": "localhost",
+			"sync": true
 		}
 	}
 }
