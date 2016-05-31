@@ -2,8 +2,10 @@
 
 import AbstractComponent from '../../extendables/abstract-component';
 import SequelizePackage from 'sequelize';
+import sequelizeFixtures from 'sequelize-fixtures';
 import fs from 'fs';
 import path from 'path';
+import _ from 'lodash';
 
 class Sequelize extends AbstractComponent {
 	setup() {
@@ -23,10 +25,42 @@ class Sequelize extends AbstractComponent {
 		
 		this.set(db);
 
+		var that = this;
 
 		if(this.getParam("sync") === true) {
 			db.connection.sync({force: true}).then(()=>{
-				console.log("~~~ DB SYNCED ~~~");
+				console.log("### DB MODELS SYNCED ###");
+				var fixtures = [];
+				try {
+					that.loadFiles(path.join(that.getBasePath(),"fixtures"), function(file, filename){
+						if(_.isFunction(file)){
+							file = file();
+						}
+						if(file.default) {
+							file = file.default;
+						}
+						if(!_.isArray(file)) {
+							console.log(file);
+							throw new Error(`Trying to load ${filename} as fixture load but file does not return an array`);
+						}
+						var name = filename.substr(0,  filename.indexOf("."));
+						_.forEach(file, (item)=>{
+							fixtures.push({
+								model: name,
+								data: item
+							});
+							
+						});
+						console.log(`~~~ Adding Fixture Data: ${filename} ~~~`);
+						
+					});
+				} catch(e){
+					console.log(e);
+				}
+				
+				sequelizeFixtures.loadFixtures(fixtures, db).then(()=>{
+					console.log(`### You have been successfully seeded ###`);
+				});
 			});
 		}
 	}

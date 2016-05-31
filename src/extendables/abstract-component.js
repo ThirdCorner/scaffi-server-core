@@ -51,7 +51,7 @@ class AbstractComponent {
 				return (file.indexOf(".") !== 0) && (file != 'index.js');
 			})
 			.forEach(function(file) {
-				fileFn( require(path.join(pathSrc, file)) );
+				fileFn( require(path.join(pathSrc, file)), file );
 			});
 	}
 	has(){
