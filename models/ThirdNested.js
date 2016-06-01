@@ -1,29 +1,29 @@
 
 module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('NestedTest', {
+	return sequelize.define('ThirdNested', {
 		id: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
 			autoIncrement: true,
 			primaryKey: true
 		},
-		TestId: {
+		NestedTestId: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
 			references: {
-				model: 'Test',
+				model: 'NestedTest',
 				key: 'id'
 			}
 		},
 		Name: DataTypes.STRING
 	}, {
-		name:  {plural: "NestedTest", singular: "NestedTest"},
+		name:  {plural: "ThirdNested", singular: "ThirdNested"},
 		freezeTableName: true,
 		classMethods: {
 			// associate: function(models){
 			// 	this.hasMany(models.Route, { onDelete: 'cascade', hooks: true });
 			// }
 		}
-
+		
 	})
 };

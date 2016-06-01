@@ -31,23 +31,24 @@ class Sequelize extends AbstractComponent {
 			db.connection.sync({force: true}).then(()=>{
 				console.log("### DB MODELS SYNCED ###");
 				var fixtures = [];
+				var idCounters = {};
 				try {
 					that.loadFiles(path.join(that.getBasePath(),"fixtures"), function(file, filename){
-						that._parseFixture(fixtures, filename, file);
+						that._parseFixture(fixtures, idCounters, filename, file);
 						
 					});
 				} catch(e){
 					console.log(e);
 				}
 
-				console.log(fixtures);
+				// console.log(fixtures);
 				sequelizeFixtures.loadFixtures(fixtures, db).then(()=>{
 					console.log(`### You have been successfully seeded ###`);
 				});
 			});
 		}
 	}
-	_parseFixture(fixtures, filename, file, parentName, parentValue) {
+	_parseFixture(fixtures, idCounters, filename, file, parentName, parentValue) {
 		if(_.isFunction(file)){
 			file = file();
 		}
@@ -64,11 +65,15 @@ class Sequelize extends AbstractComponent {
 			name = filename.substr(0, filename.indexOf("."));
 		}
 		var that = this;
+		if(!_.has(idCounters, name)) {
+			idCounters[name] = 0;
+		}
 		_.forEach(file, (item, key)=>{
 			/*
 				Need to abstract based on their id naming scheme
 			 */
-			var id = key+1;
+			idCounters[name]++;
+			var id = idCounters[name];
 			item.id = id;
 
 			if(parentName) {
@@ -83,7 +88,7 @@ class Sequelize extends AbstractComponent {
 			/* see if item has any nested items */
 			_.forEach(item, (propValue, propName)=>{
 				if(_.isArray(propValue)) {
-					that._parseFixture(fixtures, propName, propValue, name + "Id", id);
+					that._parseFixture(fixtures, idCounters, propName, propValue, name + "Id", id);
 				}
 			});
 
