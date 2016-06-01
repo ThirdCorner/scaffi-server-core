@@ -33,25 +33,7 @@ class Sequelize extends AbstractComponent {
 				var fixtures = [];
 				try {
 					that.loadFiles(path.join(that.getBasePath(),"fixtures"), function(file, filename){
-						if(_.isFunction(file)){
-							file = file();
-						}
-						if(file.default) {
-							file = file.default;
-						}
-						if(!_.isArray(file)) {
-							console.log(file);
-							throw new Error(`Trying to load ${filename} as fixture load but file does not return an array`);
-						}
-						var name = filename.substr(0,  filename.indexOf("."));
-						_.forEach(file, (item)=>{
-							fixtures.push({
-								model: name,
-								data: item
-							});
-							
-						});
-						console.log(`~~~ Adding Fixture Data: ${filename} ~~~`);
+						that._parseFixture(fixtures, filename, file);
 						
 					});
 				} catch(e){
@@ -63,6 +45,44 @@ class Sequelize extends AbstractComponent {
 				});
 			});
 		}
+	}
+	_parseFixture(fixtures, filename, file, parentName, parentValue) {
+		if(_.isFunction(file)){
+			file = file();
+		}
+		if(file.default) {
+			file = file.default;
+		}
+		if(!_.isArray(file)) {
+			console.log(file);
+			throw new Error(`Trying to load ${filename} as fixture load but file does not return an array`);
+		}
+		var name = filename.substr(0,  filename.indexOf("."));
+		var that = this;
+		_.forEach(file, (item, key)=>{
+			/*
+				Need to abstract based on their id naming scheme
+			 */
+			item.id = key;
+
+			if(parentName) {
+				item[parentName] = parentValue;
+			}
+
+			fixtures.push({
+				model: name,
+				data: item
+			});
+
+			/* see if item has any nested items */
+			_.forEach(item, (propValue, propName)=>{
+				if(_.isArray(propValue)) {
+					that._parseFixture(fixtures, propName, propValue, name, key);
+				}
+			});
+
+		});
+		console.log(`~~~ Adding Fixture Data: ${filename} ~~~`);
 	}
 	setupDatabase(){
 		var opts = {
