@@ -77,7 +77,7 @@ class Sequelize extends AbstractComponent {
 			/* see if item has any nested items */
 			_.forEach(item, (propValue, propName)=>{
 				if(_.isArray(propValue)) {
-					that._parseFixture(fixtures, propName, propValue, name, key);
+					that._parseFixture(fixtures, propName, propValue, name + "Id", key);
 				}
 			});
 
