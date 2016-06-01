@@ -1,4 +1,14 @@
 
 export default [
-	{id: 2, Name: "Jonesy"}
+	{
+		Name: "Jonesy",
+		NestedTest: [
+			{
+				Name: "JJJJJJJ"
+			},
+			{
+				Name: "Monna"
+			}
+		]
+	}
 ]

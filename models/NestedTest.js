@@ -1,14 +1,21 @@
 
 module.exports = function(sequelize, DataTypes) {
-	return sequelize.define('Test', {
+	return sequelize.define('NestedTest', {
 		id: {
 			type: DataTypes.INTEGER,
 			allowNull: false,
 			autoIncrement: true,
 			primaryKey: true
 		},
-		Name: DataTypes.STRING,
-		Comments: DataTypes.TEXT
+		TestId: {
+			type: DataTypes.INTEGER,
+			allowNull: false,
+			references: {
+				model: 'Test',
+				key: 'id'
+			}
+		},
+		Name: DataTypes.STRING
 	}, {
 		name:  {plural: "Test", singular: "Test"},
 		freezeTableName: true,

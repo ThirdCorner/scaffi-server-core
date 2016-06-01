@@ -39,7 +39,8 @@ class Sequelize extends AbstractComponent {
 				} catch(e){
 					console.log(e);
 				}
-				
+
+				console.log(fixtures);
 				sequelizeFixtures.loadFixtures(fixtures, db).then(()=>{
 					console.log(`### You have been successfully seeded ###`);
 				});
@@ -57,13 +58,18 @@ class Sequelize extends AbstractComponent {
 			console.log(file);
 			throw new Error(`Trying to load ${filename} as fixture load but file does not return an array`);
 		}
-		var name = filename.substr(0,  filename.indexOf("."));
+
+		var name = filename;
+		if(filename.indexOf(".") !== -1) {
+			name = filename.substr(0, filename.indexOf("."));
+		}
 		var that = this;
 		_.forEach(file, (item, key)=>{
 			/*
 				Need to abstract based on their id naming scheme
 			 */
-			item.id = key;
+			var id = key+1;
+			item.id = id;
 
 			if(parentName) {
 				item[parentName] = parentValue;
@@ -77,7 +83,7 @@ class Sequelize extends AbstractComponent {
 			/* see if item has any nested items */
 			_.forEach(item, (propValue, propName)=>{
 				if(_.isArray(propValue)) {
-					that._parseFixture(fixtures, propName, propValue, name + "Id", key);
+					that._parseFixture(fixtures, propName, propValue, name + "Id", id);
 				}
 			});
 
