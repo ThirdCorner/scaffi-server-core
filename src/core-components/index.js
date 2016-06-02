@@ -233,7 +233,10 @@ class ComponentLoader {
 			}, this);
 		}
 
-		component[fnCall].apply(component, args);
+		var returnObj = component[fnCall].apply(component, args);
+		if(fnCall == "setup" && returnObj) {
+			component.set(returnObj);
+		}
 
 	}
 	lazyLoadComponents() {

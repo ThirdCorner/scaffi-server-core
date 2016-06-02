@@ -5,6 +5,7 @@ import AbstractComponent from '../../extendables/abstract-component';
 import express from 'express';
 import path from 'path';
 import bodyParser from 'body-parser';
+import interceptor from 'express-interceptor';
 
 
 class App extends AbstractComponent{
@@ -35,7 +36,7 @@ class App extends AbstractComponent{
 				next();
 			}
 		});
-
+		
 
 		var port =  this.getParam("port") || process.env.PORT;
 		if(!port) {
