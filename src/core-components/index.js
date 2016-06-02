@@ -132,6 +132,7 @@ class ComponentLoader {
 
 		return {};
 	}
+
 	hasFiles(dirName){
 		return fs.existsSync(dirName);
 	}
@@ -158,22 +159,22 @@ class ComponentLoader {
 			}
 
 		}
-		try {
-			extended = require(path.join(this.customComponents, name, name + ".js"));
-			if(extended) {
-				try {
-					var config = require(path.join(this.customComponents, name, name + ".json"));
-					dependencies = config.dependencies || [];
-				} catch (e) {
-					throw new Error(`Trying to load component ${name} that doesn't have a ${name}.json file`);
+		if(this.hasFiles(path.join(this.customComponents, name, name + ".js"))) {
+			try {
+				extended = require(path.join(this.customComponents, name, name + ".js"));
+				if (extended) {
+					try {
+						var config = require(path.join(this.customComponents, name, name + ".json"));
+						dependencies = config.dependencies || [];
+					} catch (e) {
+						throw new Error(`Trying to load component ${name} that doesn't have a ${name}.json file`);
+					}
 				}
+			} catch (e) {
+				throw e;
 			}
-		} catch(e){
-			//throw e
 
 		}
-
-
 
 		// console.log("=============");
 		// console.log(name);
