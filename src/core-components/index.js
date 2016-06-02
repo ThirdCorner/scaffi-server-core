@@ -79,6 +79,7 @@ class ComponentLoader {
 	loadExtendedComponents(){
 		var that = this;
 		try {
+			console.log(that.customComponents);
 			this.getFiles(
 				that.customComponents,
 				(file)=> file.indexOf(".") === -1,
@@ -86,6 +87,7 @@ class ComponentLoader {
 					/*
 					 We only want to load ones that are new. Extended components get loaded in the first read cycle
 					 */
+					console.log("CUSTOM: " + file);
 					if (!_.has(that.LoadManager._components, file)) {
 						that.loadDependancy(file, true);
 						that.moveComponentToBase(file);
