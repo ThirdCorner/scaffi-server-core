@@ -181,6 +181,11 @@ class ComponentLoader {
 		// console.log(this.componentsDir);
 		// console.log("-------------");
 
+		if(!extended) {
+			throw new Error(`Can't load the following custom component: ${name}`);
+			return false;
+		}
+		
 		this.LoadManager._components[name] = new extended.default(this.getComponentConfig(name), name);
 		this.LoadManager._components[name].setBasePath(this.baseDir);
 		this.LoadManager._components[name].setDependencies(dependencies);
