@@ -78,6 +78,10 @@ class ComponentLoader {
 	}
 	loadExtendedComponents(){
 		var that = this;
+		if(!this.hasFiles(that.customComponents)) {
+			console.log("No 'components' folder found at root so assuming no custom components needing to be loaded");
+			return true;
+		}
 		try {
 			console.log(that.customComponents);
 			this.getFiles(
@@ -95,7 +99,7 @@ class ComponentLoader {
 				}
 			)
 		} catch(e){
-			console.log("No 'components' folder found at root so assuming no custom components needing to be loaded");
+			throw e;
 		}
 	}
 	requiredSanityCheck(){
@@ -127,6 +131,9 @@ class ComponentLoader {
 		}
 
 		return {};
+	}
+	hasFiles(dirName){
+		return fs.existsSync(dirName);
 	}
 	getFiles(dirName, filterFn, fileFn) {
 		try {
