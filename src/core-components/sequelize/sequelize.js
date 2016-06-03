@@ -111,7 +111,11 @@ class Sequelize extends AbstractComponent {
 				idle: 10000
 			},
 			define: {
-				timestamps: false,// Uncomment later
+				timestamps: true,// Uncomment later
+				createdAt: "CreatedOn",
+				updatedAt: "UpdatedOn",
+				deletedAt: "DeletedOn",
+				paranoid: true,
 				//prevent sequelize from pluralizing table names
 				freezeTableName: true
 			}
