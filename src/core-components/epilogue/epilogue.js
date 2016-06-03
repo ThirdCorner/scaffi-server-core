@@ -34,6 +34,27 @@ class Epilogue extends AbstractComponent {
 		
 		var notify = NotifyService();
 		_.each(epilogue.routes, (route, namespace)=>{
+			
+			/*
+				Stringify any non-scalars before they hit the DB
+			 */
+			route.create.write.before(function(req, res, context){
+				_.forEach(req.body, (value, name)=>{
+					if(_.isObject(value)) {
+						req.body[name] = JSON.stringify(value);
+					}
+				});
+				return context.continue;
+			});
+			route.update.write.before(function(req, res, context){
+				_.forEach(req.body, (value, name)=>{
+					if(_.isObject(value)) {
+						req.body[name] = JSON.stringify(value);
+					}
+				});
+				return context.continue;
+			});
+			
 			route.update.send.before(function(req, res, context){
 				notify.emitUpdate(namespace, context.attributes.id, context.attributes);
 				return context.continue;
