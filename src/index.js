@@ -58,22 +58,32 @@ class CoreLoader {
 			privateConfig = require(path.join(appRoot.toString(), "scaffi-server.private.json"));
 		}catch(e){}
 
-		if(privateConfig && privateConfig.components){
-			_.each(privateConfig.components, (item, componentName) =>{
-				if(item && _.isObject(item)) {
-					_.each(item, (propValue, propName)=>{
-						if(!_.has(config.components,  componentName)){
-							config.components[componentName] = {};
-						}
-
-						config.components[componentName][propName] = propValue;
-					});
-				}
-			})
+		if(privateConfig){
+			this.combineConfigs(config, privateConfig, "components");
+			this.combineConfigs(config, privateConfig, "services");
 		}
 
 		this.config = config;
 
+	}
+	combineConfigs(config, privateConfig, propName) {
+
+		if(privateConfig[propName]){
+			if(!_.has(config, propName)) {
+				config[propName] = {};
+			}
+			_.each(privateConfig[propName], (item, componentName) =>{
+				if(item && _.isObject(item)) {
+					_.each(item, (propValue, innerPropName)=>{
+						if(!_.has(config[propName],  componentName)){
+							config[propName][componentName] = {};
+						}
+						
+						config[propName][componentName][innerPropName] = propValue;
+					});
+				}
+			})
+		}	
 	}
 	loadComponents(){
 		var components = new ComponentLoader({
@@ -118,7 +128,7 @@ fs
 	.readdirSync(path.join(__dirname, "services"))
 	.forEach((file)=>{
 
-		var extendClass = require(path.join(__dirname, "services", file));
+		var extendClass = require(path.join(__dirname, "services", file, file));
 
 
 		var split = file.split("-");
@@ -127,7 +137,7 @@ fs
 			filename += _.capitalize(bit)
 		});
 
-		console.log(filename);
+		// console.log(filename);
 
 		returns.Services[filename] = extendClass;
 	});

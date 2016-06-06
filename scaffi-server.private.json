@@ -8,5 +8,10 @@
 			"host": "localhost",
 			"sync": true
 		}
+	},
+	"services":{
+		"test-service": {
+			"name": "Jim"
+		}
 	}
 }

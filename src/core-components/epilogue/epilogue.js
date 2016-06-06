@@ -2,7 +2,7 @@
 
 import AbstractComponent from '../../extendables/abstract-component';
 import epilogue from 'epilogue';
-import NotifyService from '../../services/notify-service';
+import NotifyService from '../../services/notify-service/notify-service';
 import _ from 'lodash';
 import path from 'path';
 
@@ -32,7 +32,7 @@ class Epilogue extends AbstractComponent {
 			return true;
 		}
 		
-		var notify = NotifyService();
+		var notify = NotifyService;
 		_.each(epilogue.routes, (route, namespace)=>{
 			
 			/*

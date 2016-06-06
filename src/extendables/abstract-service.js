@@ -1,4 +1,4 @@
-'use strict';
+import _ from 'lodash';
 
 class AbstractService {
 	constructor(){
@@ -10,9 +10,29 @@ class AbstractService {
 		}
 	}
 	getDependencies(){
-		throw new Error(`Your service must extend 'getDependencies' as a function`);
+		return this.dependencies || [];
+	}
+	setDependencies(dependencies) {
+		this.dependencies = dependencies;
+	}
+	setParams(args){
+		this.params = {};
+		_.each(args, (value, key)=>{
+			this.params[key] = value;
+		}, this);
+	}
+	hasParam(name) {
+		return _.has(this.params, name);
+	}
+	getParam(name) {
+		if(!this.hasParam(name)) {
+			return null;
+		}
+
+		return this.params[name];
 	}
 	initialize(){}
+	
 	set(name, value){
 		this[name] = value;
 	}

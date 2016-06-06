@@ -1,5 +1,5 @@
 'use strict';
-
+import TestService from '../../services/test-service/test-service';
 import AbstractComponent from '../../src/extendables/abstract-component';
 
 class Test extends AbstractComponent {
@@ -9,6 +9,8 @@ class Test extends AbstractComponent {
 		}
 		
 		this.set({});
+		
+		TestService.echo("Moooooo");
 	}
 	
 }

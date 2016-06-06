@@ -3,10 +3,8 @@
 import AbstractService from '../../extendables/abstract-service';
 
 class NotifyService extends AbstractService{
-	getDependencies(){
-		return ['socket-io'];
-	}
 	initialize(socket) {
+		console.log("Notifyyyyy!")
 		this.socket = socket;
 	}
 	
@@ -42,9 +40,5 @@ class NotifyService extends AbstractService{
 	}
 }
 
-var notify = new NotifyService();
-
-module.exports = function(args){
-	notify.call(args);
-	return notify;
-};
+var Service = new NotifyService();
+export default Service;

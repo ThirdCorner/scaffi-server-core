@@ -1,0 +1,12 @@
+{
+	"dependencies": [],
+	"params": {
+		"public": {},
+		"private": {
+			"name": {
+				"type": "number"
+			}
+		}
+	}
+
+}

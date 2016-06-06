@@ -1,0 +1,8 @@
+{
+	"dependencies": ["socket-io"],
+	"params": {
+		"public": {},
+		"private": {}
+	}
+
+}

@@ -19,6 +19,13 @@
 			},
 			"host": {
 				"type": "text"
+			},
+			"port": {
+				"type": "number"
+			},
+			"sync": {
+				"type": "boolean",
+				"note": "If you want to sync DB with the models folder every time the server starts."
 			}
 		}
 	}

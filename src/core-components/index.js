@@ -33,12 +33,15 @@ class ComponentLoader {
 
 			Need to load services with requiredComponents, then do sanity checks
 		 */
-		//this.loadServices();
+		var loadedServices = this.loadServices();
 		this.runComponents();
 
 		console.log("==============================");
 		console.log("Component Dependencies are Loaded");
 		console.log(this.LoadManager._loadOrder);
+		console.log("------------------------------");
+		console.log("Services Loaded");
+		console.log(loadedServices);
 		console.log("==============================");
 
 		
@@ -46,7 +49,7 @@ class ComponentLoader {
 	
 
 	loadAppComponent(){
-		this.loadDependancy('app');
+		this.loadComponentDependency('app');
 		this.moveComponentToBase('app');
 	}
 	loadCoreComponents(){
@@ -70,7 +73,7 @@ class ComponentLoader {
 				return _.has(that.config.components, file)
 			},
 			(file)=>{
-				that.loadDependancy(file);
+				that.loadComponentDependency(file);
 				that.moveComponentToBase(file);			
 			}
 		);
@@ -93,7 +96,7 @@ class ComponentLoader {
 					 */
 					console.log("CUSTOM: " + file);
 					if (!_.has(that.LoadManager._components, file)) {
-						that.loadDependancy(file, true);
+						that.loadComponentDependency(file, true);
 						that.moveComponentToBase(file);
 					}
 				}
@@ -125,6 +128,15 @@ class ComponentLoader {
 	 Workflow worker fns
 	 */
 
+
+	getServiceConfig(name){
+		if(_.has(this.config.services, name)) {
+			return this.config.services[name];
+		}
+
+		return {};
+	}
+
 	getComponentConfig(name){
 		if(_.has(this.config.components, name)) {
 			return this.config.components[name];
@@ -132,6 +144,7 @@ class ComponentLoader {
 
 		return {};
 	}
+
 
 	hasFiles(dirName){
 		return fs.existsSync(dirName);
@@ -146,29 +159,31 @@ class ComponentLoader {
 			throw e
 		};
 	}
-	loadDependancy(name, isCustomComponent) {
+	getConfigFile(dir, name) {
+		var config = {};
+		try {
+			config = require(path.join(dir, name, name + ".json"));
+		} catch(e) {
+			throw new Error(`Trying to load config for ${name} that doesn't have a ${name}.json file`);
+		}
+
+		
+		return config;
+	}
+
+	loadComponentDependency(name, isCustomComponent) {
 
 		var extended, dependencies = [];
 		if(!isCustomComponent) {
 			extended = require(path.join(this.componentsDir, name, name + ".js"));
-			try {
-				var config = require(path.join(this.componentsDir, name, name + ".json"));
-				dependencies = config.dependencies || [];
-			} catch(e) {
-				throw new Error(`Trying to load component ${name} that doesn't have a ${name}.json file`);
-			}
+			dependencies = this.getConfigFile(this.componentsDir, name).dependencies || [];
 
 		}
 		if(this.hasFiles(path.join(this.customComponents, name, name + ".js"))) {
 			try {
 				extended = require(path.join(this.customComponents, name, name + ".js"));
 				if (extended) {
-					try {
-						var config = require(path.join(this.customComponents, name, name + ".json"));
-						dependencies = config.dependencies || [];
-					} catch (e) {
-						throw new Error(`Trying to load component ${name} that doesn't have a ${name}.json file`);
-					}
+					dependencies = this.getConfigFile(this.customComponents, name).dependencies || [];
 				}
 			} catch (e) {
 				throw e;
@@ -203,14 +218,14 @@ class ComponentLoader {
 		}
 
 		if(requiredComponents.length) {
-			var needsDependancy = false;
+			var needsDependency = false;
 			_.each(requiredComponents, depName =>{
 				if(!_.has(this.LoadManager, depName)) {
-					needsDependancy = true;
+					needsDependency = true;
 				}
 			}, this);
 
-			if(needsDependancy) {
+			if(needsDependency) {
 				return false;
 			}
 		}
@@ -283,31 +298,43 @@ class ComponentLoader {
 	}
 	loadServices(){
 		var coreService = path.join(__dirname,'..', 'services');
+		var loadedServices = [];
+		loadedServices = loadedServices.concat(this.initializeServices(coreService));
+		loadedServices = loadedServices.concat(this.initializeServices(path.join(this.baseDir, 'services')));
+		return loadedServices;
+	}
+	initializeServices(serviceDir){
+		var loadedServices = [];
 		var that = this;
 		this.getFiles(
-			coreService,
+			serviceDir,
 			(file)=>{
-				return file.indexOf(".") === -1 && file !== 'abstract-service';
+				return file.indexOf(".") === -1 && file !== 'abstract-service' && _.has(that.config.services, file);
 			},
 			(file)=>{
-				var service = require(path.join(coreService, file))({silent: true});
 
+				loadedServices.push(file);
+				var service = require(path.join(serviceDir, file, file));
+				if(service.default) {
+					service = service.default;
+				}
+				service.setParams(that.getServiceConfig(file));
+				
 				/*
-					 THis needs to fail if a service is using a component that's not loaded
-					 Right now it's not throwing the error. Need to fix once config dictates what gets loaded
+				 THis needs to fail if a service is using a component that's not loaded
+				 Right now it's not throwing the error. Need to fix once config dictates what gets loaded
 				 */
 				try {
 					that.checkRequiresExistence(service, file);
 				} catch(e) {
-					if(service._isUsed()) {
-						throw new Error(`You're trying to use ${file} that does not have the required components loaded. Required components: ${service.requiredComponents()}`);
-					}
+					throw new Error(`You're trying to use ${file} that does not have the required components loaded. Required components: ${service.requiredComponents()}`);
 				}
-
+				
 				that.callComponentFn(service, file, 'initialize');
-
+				
 			}
 		);
+		return loadedServices;
 	}
 	runComponents(){
 		_.each(this.LoadManager._loadOrder, (name)=>{
