@@ -126,7 +126,7 @@ class Sequelize extends AbstractComponent {
 			    http://raathigesh.com/Connecting-To-MSSQL-with-Sequelize/
 			 */
 			opts.dialectOptions = {
-				instanceName: "sqlexpress",
+				instanceName: this.getParam("instance") || "sqlexpress",
 				//domain: "JJSPC"
 			};
 		}

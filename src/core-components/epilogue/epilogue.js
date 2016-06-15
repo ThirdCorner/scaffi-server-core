@@ -2,7 +2,7 @@
 
 import AbstractComponent from '../../extendables/abstract-component';
 import epilogue from 'epilogue';
-import NotifyService from '../../services/notify-service/notify-service';
+import UiNotifyService from '../../services/ui-notify-service/ui-notify-service';
 import _ from 'lodash';
 import path from 'path';
 
@@ -31,8 +31,7 @@ class Epilogue extends AbstractComponent {
 		if(!epilogue.routes) {
 			return true;
 		}
-		
-		var notify = NotifyService;
+
 		_.each(epilogue.routes, (route, namespace)=>{
 			
 			/*
@@ -56,15 +55,15 @@ class Epilogue extends AbstractComponent {
 			});
 			
 			route.update.send.before(function(req, res, context){
-				notify.emitUpdate(namespace, context.attributes.id, context.attributes);
+				UiNotifyService.emitUpdate(namespace, context.attributes.id, context.attributes);
 				return context.continue;
 			});
 			route.create.send.before(function(req, res, context){
-				notify.emitCreate(namespace, context.attributes);
+				UiNotifyService.emitCreate(namespace, context.attributes);
 				return context.continue;
 			});
 			route.delete.send.before(function(req, res, context){
-				notify.emitDelete(namespace, context.criteria.id, true);
+				UiNotifyService.emitDelete(namespace, context.criteria.id, true);
 				return context.continue;
 			});
 		}, this);

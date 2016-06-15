@@ -2,9 +2,8 @@
 
 import AbstractService from '../../extendables/abstract-service';
 
-class NotifyService extends AbstractService{
+class UiNotifyService extends AbstractService{
 	initialize(socket) {
-		console.log("Notifyyyyy!")
 		this.socket = socket;
 	}
 	
@@ -40,5 +39,5 @@ class NotifyService extends AbstractService{
 	}
 }
 
-var Service = new NotifyService();
+var Service = new UiNotifyService();
 export default Service;

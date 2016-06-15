@@ -4,11 +4,11 @@ class AbstractService {
 	constructor(){
 		this._initialized = false;
 	}
-	call(args){
-		if(!args || !args.silent) {
-			this._markUsage();
-		}
-	}
+	// call(args){
+	// 	if(!args || !args.silent) {
+	// 		this._markUsage();
+	// 	}
+	// }
 	getDependencies(){
 		return this.dependencies || [];
 	}
