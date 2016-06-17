@@ -37,7 +37,7 @@ class App extends AbstractComponent{
 		});
 		
 
-		var port =  this.getParam("port") || process.env.PORT;
+		var port =  process.env.PORT || this.getParam("port");
 		if(!port) {
 			port = '3000'
 		}
