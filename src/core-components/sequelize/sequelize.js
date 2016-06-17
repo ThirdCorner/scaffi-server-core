@@ -95,16 +95,10 @@ class Sequelize extends AbstractComponent {
 		});
 		console.log(`~~~ Adding Fixture Data: ${filename} ~~~`);
 	}
-	setupDatabase(){
-		var opts = {
-			// host: "localhost",
-			// dialect: "mssql",
-			host: this.getParam('host'),
+	setupDatabase() {
+		var options = {
+			logging: true,
 			dialect: this.getParam('dialect'),
-			port: this.getParam("port"),
-			// disable logging; default: console.log
-			logging: false,
-
 			pool: {
 				max: 5,
 				min: 0,
@@ -119,21 +113,31 @@ class Sequelize extends AbstractComponent {
 				//prevent sequelize from pluralizing table names
 				freezeTableName: true
 			}
-
 		};
-		if(this.getParam("dialect") == "mssql") {
+
+		
+		if (this.getParam("dialect") == "mssql" && this.getParam("instance") ) {
 			/*
-			    http://raathigesh.com/Connecting-To-MSSQL-with-Sequelize/
+			 http://raathigesh.com/Connecting-To-MSSQL-with-Sequelize/
 			 */
-			var instance = this.getParam("instance") || "sqlexpress";
-			console.log("INSTANCE TYPE: " + instance);
-			opts.dialectOptions = {
-				instanceName: instance,
-				//domain: "JJSPC"
+			
+			options.dialectOptions = {
+				instanceName: this.getParam("instance")
 			};
 		}
-		return new SequelizePackage(this.getParam("databaseName"), this.getParam("username"), this.getParam("password"), opts)
-		//return new SequelizePackage(this.getParam('databaseName'), this.getParam('username'), this.getParam('password'), opts)
+		if(this.getParam('host')) {
+			options.host =  this.getParam('host');
+		}
+		if(this.getParam("port")) {
+			options.port = this.getParam("port");
+		}
+
+		if (this.getParam("connectionString")) {
+			return new SequelizePackage(this.getParam("connectionString"), options)
+		} else {
+			return new SequelizePackage(this.getParam("databaseName"), this.getParam("username"), this.getParam("password"), options)
+		}
+
 
 
 	}
