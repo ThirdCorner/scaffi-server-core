@@ -97,7 +97,7 @@ class Sequelize extends AbstractComponent {
 	}
 	setupDatabase() {
 		var options = {
-			logging: true,
+			logging: this.getParam("logging") || false,
 			dialect: this.getParam('dialect'),
 			pool: {
 				max: 5,
