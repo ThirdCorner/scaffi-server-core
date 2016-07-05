@@ -5,8 +5,9 @@ require("babel-register")({
 var path = require('path');
 var ScaffiCore = require("../../src/index");
 
-ScaffiCore.initialize({});
-
-/*
-	Nede to get es2015 runnig for this so I can test each logic piece
- */
+ScaffiCore.initialize({
+	"components": {
+		"sequelize": {
+		}
+	}
+});

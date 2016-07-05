@@ -9,11 +9,13 @@ import appRoot from 'app-root-path';
 var ScaffiConfig = require(path.join(appRoot.toString(), "scaffi-server.json"));
 
 class CoreLoader {
-	constructor() {
+	constructor(args) {
 
 		/*
 			Get base path
 		 */
+
+		var overloadConfig = args || {};
 		
 		if(!_.isObject(ScaffiConfig)) {
 			throw new Error("scaffi-server.json is not in the proper format. Is it in the basepath of your server app?");
@@ -21,11 +23,11 @@ class CoreLoader {
 
 		this.basePath = appRoot.toString();
 		this.config = {};
-		this.loadConfig();
+		this.loadConfig(overloadConfig);
 		this.loadComponents();
 
 	}
-	loadConfig(){
+	loadConfig(overloadConfig){
 
 		if(!ScaffiConfig.components) {
 			throw new Error("Your scaffi-server.json file is not in the proper format. Needs a components property.");
@@ -45,11 +47,14 @@ class CoreLoader {
 		};
 		_.each(required, (obj, name)=>{
 			if(!_.has(ScaffiConfig.components, name)) {
-				ScaffiConfig.components[name] = obj;
+				ScaffiConfig.components[name] = obj;   
 			}
 		});
 
-		ScaffiConfig.components["app"].port = ScaffiConfig.config.serverLocalhostPort
+		/*
+			This is what you set in yo scaffi:config
+		 */
+		ScaffiConfig.components["app"].port = ScaffiConfig.config.serverLocalhostPort;
 
 		var config = ScaffiConfig;
 
@@ -58,10 +63,29 @@ class CoreLoader {
 			privateConfig = require(path.join(appRoot.toString(), "scaffi-server.private.json"));
 		}catch(e){}
 
+		/*
+			We do the overloadConfig first because this is stuff passed through the injection point from the app.
+			Then we look for at anything set in .private.json.
+
+			~The reasoning for this is thus~
+			NODE as a standalone server:
+				You're gonna be using .private in this instance so this load order doesn't matter
+
+			NODE through iis:
+				IIS has stuff like port and what not that you'll want to pass to the app, but you can't do that
+				in JSON because you can't say process.env.PORT in a json, so we'll do it here
+
+		 */
+
+		this.combineConfigs(config, overloadConfig, "components");
+		this.combineConfigs(config, overloadConfig, "services");
+
 		if(privateConfig){
 			this.combineConfigs(config, privateConfig, "components");
 			this.combineConfigs(config, privateConfig, "services");
 		}
+
+		console.log(config)
 
 		this.config = config;
 

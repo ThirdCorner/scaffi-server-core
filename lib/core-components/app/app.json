@@ -2,7 +2,12 @@
 	"dependencies": [],
   	"params": {
     	"public": {},
-		"private": {}
+		"private": {
+			"environment": {
+				"type": "list",
+				"options": ["production", "development", "qa", "localhost", "cli"]
+			}
+		}
   	}
 
 }

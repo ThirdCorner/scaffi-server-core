@@ -1,11 +1,14 @@
 {
 	"components": {
+		"app": {
+			"environment": "development"
+		},
 		"sequelize": {
 			"host": "localhost",
 			"username": "admin",
 			"password": "pass",
-			"instance": "sqlexpress",
-			"databaseName": "PASS-Wells"
+			"databaseName": "PASS-Wells",
+			"instance": "sqlexpress"
 		}
 	},
 	"services":{
