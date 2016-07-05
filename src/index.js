@@ -85,8 +85,6 @@ class CoreLoader {
 			this.combineConfigs(config, privateConfig, "services");
 		}
 
-		console.log(config)
-
 		this.config = config;
 
 	}
