@@ -39,7 +39,7 @@ class App extends AbstractComponent{
 
 
 		if(!this.getParam("environment") || ["production", "development", "qa", "localhost", "cli"].indexOf(this.getParam("environment").toLowerCase()) === -1){
-			throw new Error("No valid environment mode provided in app config: " + this.getParam("environment").toLowerCase());
+			throw new Error("No valid environment mode provided in app config: " + this.getParam("environment"));
 		}
 
 		var port = process.env.PORT || this.getParam("port");
