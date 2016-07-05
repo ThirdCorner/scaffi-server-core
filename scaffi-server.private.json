@@ -7,7 +7,7 @@
 			"host": "localhost",
 			"username": "admin",
 			"password": "pass",
-			"databaseName": "PASS-Wells",
+			"databaseName": "Test",
 			"instance": "sqlexpress"
 		}
 	},
