@@ -38,7 +38,7 @@ class App extends AbstractComponent{
 		});
 
 
-		if(["production", "development", "qa", "localhost", "cli"].indexOf(this.getParam("environment").toLowerCase()) === -1){
+		if(!this.getParam("environment") || ["production", "development", "qa", "localhost", "cli"].indexOf(this.getParam("environment").toLowerCase()) === -1){
 			throw new Error("No valid environment mode provided in app config: " + this.getParam("environment").toLowerCase());
 		}
 

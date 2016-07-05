@@ -8,6 +8,8 @@ var ScaffiCore = require("../../src/index");
 ScaffiCore.initialize({
 	"components": {
 		"sequelize": {
+			"username": "admin2",
+			"password": "password2"
 		}
 	}
 });
