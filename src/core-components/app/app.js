@@ -11,7 +11,6 @@ class App extends AbstractComponent{
 	setup(){
 		this.setupApp();
 		this.setupAppPresets();
-		this.setupAppApis();
 	}
 	setupApp(){
 		this.set(express());
@@ -36,12 +35,7 @@ class App extends AbstractComponent{
 				next();
 			}
 		});
-
-
-		if(!this.getParam("environment") || ["production", "development", "qa", "localhost", "cli"].indexOf(this.getParam("environment").toLowerCase()) === -1){
-			throw new Error("No valid environment mode provided in app config: " + this.getParam("environment"));
-		}
-
+		
 		var port = process.env.PORT || this.getParam("port");
 		if(!port) {
 			port = '3000'
@@ -64,27 +58,6 @@ class App extends AbstractComponent{
 
 		app.set('port', port);
 		
-	}
-	setupAppApis(){
-		var app = this.get();
-		app.isProductionMode = ()=>{
-			return this.getParam("environment").toLowerCase() === "production";
-		};
-		app.isDevelopmentMode = ()=>{
-			return this.getParam("environment").toLowerCase() === "development";
-		};
-		app.isQaMode = ()=>{
-			return this.getParam("environment").toLowerCase() === "qa";
-		};
-		app.isLocalhostMode = ()=>{
-			return this.getParam("environment").toLowerCase() === "localhost";
-		};
-		app.isCliMode = ()=>{
-			return this.getParam("environment").toLowerCase() === "cli";
-		};
-		app.getEnvironment =()=>{
-			return this.getParam("environment").toLowerCase();
-		}
 	}
 	normalizePort(val) {
 		var port = parseInt(val, 10);

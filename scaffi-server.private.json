@@ -1,8 +1,8 @@
 {
+	"config":{
+		"environment": "development"
+	},
 	"components": {
-		"app": {
-			"environment": "development"
-		},
 		"sequelize": {
 			"host": "localhost",
 			"username": "admin",
