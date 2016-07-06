@@ -1,5 +1,5 @@
 {
-	"dependencies": [],
+	"dependencies": ["app"],
 	"params": {
 		"public": {},
 		"private": {

@@ -3,9 +3,9 @@
 import AbstractService from '../../src/extendables/abstract-service';
 
 class TestService extends AbstractService{
-	initialize() {
+	initialize(app) {
 		console.log("test notify service!");
-		console.log(this.getParam("name"));
+		console.log("APP Environment", app.getEnvironment());
 	}
 	echo(text){
 		console.log("TEST SERVICE ECHO: ", text);

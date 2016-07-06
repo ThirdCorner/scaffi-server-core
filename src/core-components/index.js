@@ -318,8 +318,13 @@ class ComponentLoader {
 				if(service.default) {
 					service = service.default;
 				}
+
+				var dependencies = [];
+				if(service) {
+					dependencies = this.getConfigFile(serviceDir, file).dependencies || [];
+				}
 				service.setParams(that.getServiceConfig(file));
-				
+				service.setDependencies(dependencies);
 				/*
 				 THis needs to fail if a service is using a component that's not loaded
 				 Right now it's not throwing the error. Need to fix once config dictates what gets loaded
