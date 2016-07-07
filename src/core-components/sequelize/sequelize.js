@@ -115,15 +115,27 @@ class Sequelize extends AbstractComponent {
 			}
 		};
 
-		
-		if (this.getParam("dialect") == "mssql" && this.getParam("instance") ) {
-			/*
-			 http://raathigesh.com/Connecting-To-MSSQL-with-Sequelize/
-			 */
-			
-			options.dialectOptions = {
-				instanceName: this.getParam("instance")
-			};
+		if(this.getParam("dialectOptions")){
+			options.dialectOptions = this.getParam("dialectOptions");
+		} else {
+			options.dialectOptions = {};
+		}
+
+
+		if(this.getParam("dialect") == "mssql") {
+			if (this.getParam("instance")) {
+				/*
+				 http://raathigesh.com/Connecting-To-MSSQL-with-Sequelize/
+				 */
+
+				options.dialectOptions.instanceName = this.getParam("instance");
+			}
+			if(this.getParam("domain")) {
+				options.dialectOptions.domain = this.getParam("domain");
+			}
+			if(this.getParam("encrypt")) {
+				options.dialectOptions.encrypt = this.getParam("encrypt");
+			}
 		}
 		if(this.getParam('host')) {
 			options.host =  this.getParam('host');
@@ -131,6 +143,7 @@ class Sequelize extends AbstractComponent {
 		if(this.getParam("port")) {
 			options.port = this.getParam("port");
 		}
+		
 
 		if (this.getParam("connectionString")) {
 			return new SequelizePackage(this.getParam("connectionString"), options)
