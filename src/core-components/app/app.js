@@ -76,22 +76,22 @@ class App extends AbstractComponent{
 			res.sendUnauthorized = (errorMsg, stack)=>{
 				res.status(401).send({
 					errorType: "unauthorized",
-					message: message,
-					stack
+					message: errorMsg,
+					stack: stack
 				})
 			};
 			res.sendError = (errorMsg, stack)=>{
 				res.status(500).send({
 					errorType: "error",
-					message: error,
-					stack
+					message: errorMsg,
+					stack: stack
 				});
 			};
 			res.sendNotFound = (errorMsg, stack)=>{
 				res.status(404).send({
 					errorType: "notFound",
-					message: error,
-					stack
+					message: errorMsg,
+					stack: stack
 				});
 			};
 			

@@ -3,7 +3,7 @@ import TestService from '../../services/test-service/test-service';
 import AbstractComponent from '../../src/extendables/abstract-component';
 
 class Test extends AbstractComponent {
-	setup(app) {
+	setup(app, router, db) {
 		if(!app) {
 			throw new Error("app not provide for test component");
 		}
@@ -11,6 +11,12 @@ class Test extends AbstractComponent {
 		this.set({});
 		
 		TestService.echo("Moooooo");
+		
+		router.list("/api/testFail/", (req, res, next)=>{
+			db.Test.create({Comments: "tototo"}).then(()=>{
+				res.send("Good");
+			});
+		});
 	}
 	
 }
