@@ -7,7 +7,10 @@ module.exports = function(sequelize, DataTypes) {
 			autoIncrement: true,
 			primaryKey: true
 		},
-		Name: DataTypes.STRING,
+		Name: {
+			type: DataTypes.STRING,
+			allowNull: false
+		},
 		Comments: DataTypes.TEXT
 	}, {
 		name:  {plural: "Test", singular: "Test"},

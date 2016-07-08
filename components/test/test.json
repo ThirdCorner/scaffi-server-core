@@ -1,5 +1,5 @@
 {
-	"dependencies": ["app"],
+	"dependencies": ["app", "router", "sequelize"],
 	"params": {
 		"public": {},
 		"private": {}

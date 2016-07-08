@@ -5,12 +5,13 @@ import AbstractComponent from '../../extendables/abstract-component';
 import express from 'express';
 import path from 'path';
 import bodyParser from 'body-parser';
-
+import _ from 'lodash';
 
 class App extends AbstractComponent{
 	setup(){
 		this.setupApp();
 		this.setupAppPresets();
+		this.attachSendHandlers()
 	}
 	setupApp(){
 		this.set(express());
@@ -58,6 +59,44 @@ class App extends AbstractComponent{
 
 		app.set('port', port);
 		
+		
+		
+	}
+	attachSendHandlers(){
+		this.get().use((req, res, next)=>{
+			res.sendSuccess = (data)=>{
+				if(data && !_.isObject(data)) {
+					data = {
+						response: data
+					}
+				}
+				
+				res.send(data);
+			};
+			res.sendUnauthorized = (errorMsg, stack)=>{
+				res.status(401).send({
+					errorType: "unauthorized",
+					message: message,
+					stack
+				})
+			};
+			res.sendError = (errorMsg, stack)=>{
+				res.status(500).send({
+					errorType: "error",
+					message: error,
+					stack
+				});
+			};
+			res.sendNotFound = (errorMsg, stack)=>{
+				res.status(404).send({
+					errorType: "notFound",
+					message: error,
+					stack
+				});
+			};
+			
+			next();
+		});
 	}
 	normalizePort(val) {
 		var port = parseInt(val, 10);

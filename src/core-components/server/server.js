@@ -11,6 +11,16 @@ class Server extends AbstractComponent {
 		this.set(server);
 	}
 	run(app){
+		
+		app.use(function(err, req, res, next){
+			console.log("ERROR", err.stack);
+			res.status(500).send(err);
+		});
+
+		process.on("unhandledRejection", (error, promise)=>{
+			throw error;
+		});
+
 		var server = this.get();
 		var port = app.get("port");
 
@@ -43,7 +53,7 @@ class Server extends AbstractComponent {
 			var bind = typeof addr === 'string'
 				? 'pipe ' + addr
 				: 'port ' + addr.port;
-			debug('Listening on ' + bind);
+			console.log('Listening on ' + bind);
 		});
 
 	}
