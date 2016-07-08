@@ -94,7 +94,6 @@ class ComponentLoader {
 					/*
 					 We only want to load ones that are new. Extended components get loaded in the first read cycle
 					 */
-					console.log("CUSTOM: " + file);
 					if (!_.has(that.LoadManager._components, file)) {
 						that.loadComponentDependency(file, true);
 						that.moveComponentToBase(file);
