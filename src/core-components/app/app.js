@@ -73,7 +73,7 @@ class App extends AbstractComponent{
 				
 				res.send(data);
 			};
-			res.sendUnauthorized = (errorMsg, stack)=>{
+			res.sendForbidden = (errorMsg, stack)=>{
 				res.status(403).send({
 					errorType: "forbidden",
 					message: errorMsg,
