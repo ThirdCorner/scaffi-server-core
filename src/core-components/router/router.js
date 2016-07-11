@@ -29,7 +29,6 @@ class Router extends AbstractComponent {
 			},
 			list(url, fn) {
 				app.get(url, (req, res, next)=>{
-					console.log(url, " LIST");
 					try{
 						fn(req, res, next);
 					} catch(e){
