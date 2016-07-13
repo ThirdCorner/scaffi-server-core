@@ -83,7 +83,6 @@ class CoreLoader {
 		this.combineConfigs(config, overloadConfig, "components");
 		this.combineConfigs(config, overloadConfig, "services");
 
-		console.log("=========PRIVATE");
 		if(privateConfig){
 			this.combineConfigs(config, privateConfig, "config");
 			this.combineConfigs(config, privateConfig, "components");
@@ -137,7 +136,9 @@ class CoreLoader {
 		var components = new ComponentLoader({
 			baseDir: this.basePath,
 			config: this.config
-		})
+		});
+		
+		console.log("========= RUNNING MODE: " + this.getEnvironment() + " =========");
 	}
 }
 var coreLoader;

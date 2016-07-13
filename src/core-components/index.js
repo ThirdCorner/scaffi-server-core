@@ -149,6 +149,13 @@ class ComponentLoader {
 		return fs.existsSync(dirName);
 	}
 	getFiles(dirName, filterFn, fileFn) {
+		/*
+			Make sure we don't error out if the dir doesn't exist
+		 */
+		if(!this.hasFiles(dirName)){
+			return false;
+		}
+
 		try {
 			fs
 				.readdirSync(dirName)
