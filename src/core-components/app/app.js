@@ -88,6 +88,10 @@ class App extends AbstractComponent{
 				})
 			};
 			res.sendError = (errorMsg, stack)=>{
+				if(!stack && errorMsg && errorMsg instanceof Error) {
+					stack = errorMsg.stack;
+					errorMsg = errorMsg.message;
+				}
 				res.status(500).send({
 					errorType: "error",
 					message: errorMsg,
