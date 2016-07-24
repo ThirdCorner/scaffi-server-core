@@ -2,8 +2,8 @@
 
 import AbstractComponent from '../../extendables/abstract-component';
 import path from 'path';
+import appRoot from 'app-root-path';
 var express = require('express');
-
 
 class Router extends AbstractComponent {
 	setup(app){
@@ -54,7 +54,7 @@ class Router extends AbstractComponent {
 
 		/* GET home page. */
 		router.get('/', function (req, res, next) {
-			res.sendFile(path.join(__dirname, '../public/index.html'));
+			res.sendFile(path.join(appRoot.toString(), 'public', 'index.html'));
 		});
 
 
@@ -66,7 +66,7 @@ class Router extends AbstractComponent {
 			All unknown routes, just send the index?????
 		 */
 		app.all('*', function (req, res, next) {
-			res.sendFile(path.join(__dirname, '../public/index.html'));
+			res.sendFile(path.join(appRoot.toString(), 'public', 'index.html'));
 		});
 
 		// catch 404 and forward to error handler
