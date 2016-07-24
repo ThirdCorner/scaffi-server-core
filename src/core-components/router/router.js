@@ -63,10 +63,10 @@ class Router extends AbstractComponent {
 	}
 	runFallbacks(app) {
 		/*
-		 Redirects all misc requests back to index page
+			All unknown routes, just send the index?????
 		 */
 		app.all('*', function (req, res, next) {
-			res.redirect("/");
+			res.sendFile(path.join(__dirname, '../public/index.html'));
 		});
 
 		// catch 404 and forward to error handler
