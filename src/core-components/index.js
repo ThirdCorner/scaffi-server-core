@@ -170,7 +170,7 @@ class ComponentLoader {
 		try {
 			config = require(path.join(dir, name, name + ".json"));
 		} catch(e) {
-			console.log("Can't find path json: " + config);
+			console.log("Can't find path json: " + path.join(dir, name, name + ".json"));
 			throw new Error(`Trying to load config for ${name} that doesn't have a ${name}.json file`);
 		}
 
