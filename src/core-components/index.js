@@ -172,7 +172,7 @@ class ComponentLoader {
 		} catch(e) {
 			
 			console.log("Can't find path json: " + path.join(dir, name, name + ".json"));
-			throw new Error(`Trying to load config for ${name} that doesn't have a ${name}.json file or unreadable` + e.message);
+			throw new Error(`Trying to load config for ${name} that doesn't have a ${name}.json file or unreadable: \n${e.message} `);
 		}
 
 		
