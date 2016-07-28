@@ -340,7 +340,7 @@ class ComponentLoader {
 				try {
 					that.checkRequiresExistence(service, file);
 				} catch(e) {
-					throw new Error(`You're trying to use ${file} that does not have the required components loaded. Required components: ${service.requiredComponents()}`);
+					throw new Error(`You're trying to use ${file} that does not have the required components loaded. Required components: ${service.getDependencies()}`);
 				}
 				
 				that.callComponentFn(service, file, 'initialize');
