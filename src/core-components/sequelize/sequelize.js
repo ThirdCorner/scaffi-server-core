@@ -173,6 +173,8 @@ class Sequelize extends AbstractComponent {
 				}
 			});
 		} catch(e) {
+			console.log("LOOKING FOR MODELS IN :", path.join(this.getBasePath(), 'models'));
+			console.log("ERROR:", e.message);
 			throw new Error("Trying to get models but can't load for sequelize. You sure you have a folder on at root?");
 		}
 	}
