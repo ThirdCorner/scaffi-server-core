@@ -122,6 +122,13 @@ class Sequelize extends AbstractComponent {
 		}
 
 
+		if(this.getParam("define")) {
+			options.define = this.getParam("define");
+		}
+
+
+
+
 		if(this.getParam("dialect") == "mssql") {
 			if (this.getParam("instance")) {
 				/*
