@@ -41,7 +41,7 @@ class Epilogue extends AbstractComponent {
 				_.forEach(req.body, (value, name)=>{
 					if(_.isObject(value)) {
 						req.body[name] = JSON.stringify(value);
-					}
+					} 
 				});
 				return context.continue;
 			});
