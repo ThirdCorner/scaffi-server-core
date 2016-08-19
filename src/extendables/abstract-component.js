@@ -31,6 +31,15 @@ class AbstractComponent {
 	setBasePath(basePath){
 		this.basePath = basePath;
 	}
+	setConfig(config){
+		this.config = config;
+	}
+	getConfig(propName){
+		if(_.has(this.config, propName)){
+			return this.config[propName];
+		}
+		return null;
+	}
 	getBasePath(){
 		return this.basePath;
 	}

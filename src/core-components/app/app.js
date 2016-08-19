@@ -22,10 +22,15 @@ class App extends AbstractComponent{
 		/*
 			Tell frontend what's available for REST and hook into the OPTIONS resource
 		 */
-		app.use(function (req, res, next) {
-			res.header("Access-Control-Allow-Origin", "*");
-			res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Content-Length, X-Requested-With, Pragma, Cache-Control");
+		app.use((req, res, next) => {
+			/*
+				This is so cookies will work. We have to specify a specific address to get through CORS
+			 */
+			res.header('Access-Control-Allow-Credentials', true);
+			res.header("Access-Control-Allow-Origin", "http://localhost:" + this.getConfig("uiLocalhostPort"));
 
+
+			res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Content-Length, X-Requested-With, Pragma, Cache-Control");
 			res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
 
 			// intercept OPTIONS method

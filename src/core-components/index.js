@@ -212,7 +212,9 @@ class ComponentLoader {
 		
 		this.LoadManager._components[name] = new extended.default(this.getComponentConfig(name), name);
 		this.LoadManager._components[name].setBasePath(this.baseDir);
+		this.LoadManager._components[name].setConfig(this.config.config);
 		this.LoadManager._components[name].setDependencies(dependencies);
+		
 
 		return extended;
 
