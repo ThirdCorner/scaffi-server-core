@@ -167,6 +167,13 @@ var returns = {
 		},
 		getEnvironment(){
 			return coreLoader.getEnvironment();
+		},
+		get(){
+			if(coreLoader.getEnvironment() === "localhost" || coreLoader.getEnvironment() === "prototype" || coreLoader.getEnvironment() === "development") {
+				return coreLoader.config;
+			} else {
+				throw new Error("Can't access config in non-development mode servers.");
+			}
 		}
 
 	},

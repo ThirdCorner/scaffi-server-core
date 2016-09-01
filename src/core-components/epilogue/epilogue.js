@@ -15,17 +15,33 @@ class Epilogue extends AbstractComponent {
 		});
 
 		this.setupRoutes(app, db, epilogue);
-		
+		this.setupErrorRouteOverrides(epilogue);
 		this.setupSocketRoutes(epilogue);
 		
 		this.set(epilogue);
 	}
 	setupRoutes(app, db, epilogue) {
 		epilogue.routes = {}
-		this.loadFiles(path.join(this.getBasePath(), 'routes','epilogue'),(loadedFile) => {
+		this.loadFiles(path.join(this.getBasePath(), 'routes', 'epilogue'),(loadedFile) => {
 			var routeModel = loadedFile(db, epilogue);
 			epilogue.routes[routeModel.model.name] = routeModel;
 		}) ;
+	}
+	setupErrorRouteOverrides(epilogue){
+		if(!epilogue.routes) {
+			return true;
+		}
+		var milestones = ["create", "delete", "list", "read", "update"];
+		_.each(epilogue.routes, (route, namespace)=> {
+			_.each(milestones, (name)=>{
+
+				route.controllers[name].error = (req, res, error)=> {
+					console.log(error.stack);
+					res.sendError(error);
+				};
+
+			});
+		}, this);
 	}
 	setupSocketRoutes(epilogue) {
 		if(!epilogue.routes) {

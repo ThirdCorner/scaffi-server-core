@@ -12,26 +12,56 @@ class Router extends AbstractComponent {
 				app.use(url, route);
 			},
 			get(url, fn) {
-				app.get(url + "/:id", fn);
+				app.get(url + "/:id", (req, res, next)=>{
+					try {
+						fn(req, res, next);
+					} catch (e) {
+						res.sendError(e);
+					}
+				});
 			},
 			post(url, fn) {
-				app.post(url, fn);
+				app.post(url, (req, res, next)=>{
+					try {
+						fn(req, res, next);
+					} catch (e) {
+						res.sendError(e);
+					}
+				});
 			},
 			put(url, fn) {
-				app.put(url + "/:id", fn);
+				app.put(url + "/:id", (req, res, next)=>{
+					try {
+						fn(req, res, next);
+					} catch (e) {
+						res.sendError(e);
+					}
+				});
 
 			},
 			delete(url, fn) {
-				app.delete(url + "/:id", fn);
+				app.delete(url + "/:id", (req, res, next)=>{
+					try {
+						fn(req, res, next);
+					} catch (e) {
+						res.sendError(e);
+					}
+				});
 			},
 			deleteList(url, fn) {
-				app.delete(url, fn);	
+				app.delete(url, (req, res, next)=>{
+					try {
+						fn(req, res, next);
+					} catch (e) {
+						res.sendError(e);
+					}
+				});
 			},
 			list(url, fn) {
 				app.get(url, (req, res, next)=>{
 					try {
 						fn(req, res, next);
-					} catch(e){
+					} catch (e) {
 						res.sendError(e);
 					}
 				});

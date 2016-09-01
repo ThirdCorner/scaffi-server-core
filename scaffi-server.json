@@ -15,6 +15,7 @@
 		"app": {},
 		"sequelize": {
 			"dialect": "mssql"
-		}
+		},
+		"epilogue":{}
 	}
 }

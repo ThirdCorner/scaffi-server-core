@@ -17,8 +17,9 @@ class Server extends AbstractComponent {
 			res.status(500).send(err);
 		});
 
-		process.on("unhandledRejection", (error, promise)=>{
-			throw error;
+		process.on('uncaughtException', function (er) {
+			console.error(er.stack)
+			process.exit(1)
 		});
 
 		var server = this.get();

@@ -6,7 +6,7 @@
 		"sequelize": {
 			"host": "localhost",
 			"username": "admin",
-			"password": "pass",
+			"password": "admin",
 			"databaseName": "Test",
 			"instance": "sqlexpress"
 		}

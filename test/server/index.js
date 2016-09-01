@@ -13,3 +13,6 @@ ScaffiCore.initialize({
 		}
 	}
 });
+
+
+console.log(ScaffiCore.config.get());
