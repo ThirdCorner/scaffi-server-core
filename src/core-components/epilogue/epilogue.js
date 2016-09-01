@@ -36,8 +36,12 @@ class Epilogue extends AbstractComponent {
 			_.each(milestones, (name)=>{
 
 				route.controllers[name].error = (req, res, error)=> {
+					if(error.cause) {
+						console.log(error.cause);
+					}
+					
 					console.log(error.stack);
-					res.sendError(error);
+					res.sendError(error.message, error.cause || error.stack);
 				};
 
 			});

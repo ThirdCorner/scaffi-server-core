@@ -38,9 +38,9 @@ module.exports = function(db, epilogue, io) {
 	});
 	ParamResource.list.fetch.before(function(req, res, context){
 
-		throw new ForbiddenError("thotoo");
+//		throw new ForbiddenError("thotoo");
 
-		return context.skip;
+		return context.continue;
 
 	});
 	return ParamResource;
