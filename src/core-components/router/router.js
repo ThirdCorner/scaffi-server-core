@@ -29,12 +29,10 @@ class Router extends AbstractComponent {
 			},
 			list(url, fn) {
 				app.get(url, (req, res, next)=>{
-					try{
+					try {
 						fn(req, res, next);
 					} catch(e){
-						console.log("CAUGHT ERROR!!!");
-						console.log(e);
-						res.status(500).send(e);
+						res.sendError(e);
 					}
 				});
 

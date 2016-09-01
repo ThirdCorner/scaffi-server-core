@@ -1,6 +1,6 @@
 {
   "name": "scaffi-server-core",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "author": "JJ",
   "scripts": {
     "testrun": "nodemon ./test/server/",
@@ -50,5 +50,8 @@
   "bugs": {
     "url": "https://github.com/ThirdCorner/scaffi-server-core/issues"
   },
-  "homepage": "https://github.com/ThirdCorner/scaffi-server-core#readme"
+  "homepage": "https://github.com/ThirdCorner/scaffi-server-core#readme",
+  "directories": {
+    "test": "test"
+  }
 }
