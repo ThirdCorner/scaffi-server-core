@@ -53,11 +53,6 @@ class CoreLoader {
 			}
 		});
 
-		/*
-			This is what you set in yo scaffi:config
-		 */
-		ScaffiConfig.components["app"].port = ScaffiConfig.config.serverLocalhostPort;
-
 		var config = ScaffiConfig;
 
 		var privateConfig;

@@ -2,6 +2,7 @@
 
 import AbstractComponent from '../../extendables/abstract-component';
 
+
 import express from 'express';
 import path from 'path';
 import bodyParser from 'body-parser';
@@ -44,7 +45,8 @@ class App extends AbstractComponent{
 		
 		var port = process.env.PORT || this.getParam("port");
 		if(!port) {
-			port = '3000'
+			console.log("(reverting to serverLocalhostPort because no port was set)");
+			port = this.getConfig("serverLocalhostPort");
 		}
 
 		port = this.normalizePort(port);
