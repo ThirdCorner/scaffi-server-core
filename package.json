@@ -1,6 +1,6 @@
 {
   "name": "scaffi-server-core",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "author": "JJ",
   "scripts": {
     "testrun": "nodemon ./test/server/",

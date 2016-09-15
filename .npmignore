@@ -1,1 +1,8 @@
 src/
+test/
+services/
+routes/
+models/
+fitures/
+dist/
+components/
