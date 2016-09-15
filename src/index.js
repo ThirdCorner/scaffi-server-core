@@ -142,6 +142,9 @@ var returns = {
 		coreLoader = new CoreLoader(args);
 	},
 	config: {
+		getVersion(){
+			return coreLoader.getConfigProperty("version") || "???";	
+		},
 		isProductionMode(){
 			return coreLoader.getEnvironment() === "production";
 		},
