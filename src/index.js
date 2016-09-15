@@ -117,6 +117,9 @@ class CoreLoader {
 			})
 		}
 	}
+	getVersion(){
+		return this.config.config.version || "???";
+	}
 	getEnvironment() {
 		return this.config.config.environment;
 	}
@@ -134,6 +137,7 @@ class CoreLoader {
 		});
 		
 		console.log("========= RUNNING MODE: " + this.getEnvironment() + " =========");
+		console.log("````````` VERSION: " + this.getVersion() + "`````````");
 	}
 }
 var coreLoader;
@@ -143,7 +147,7 @@ var returns = {
 	},
 	config: {
 		getVersion(){
-			return coreLoader.getConfigProperty("version") || "???";	
+			return coreLoader.getVersion;	
 		},
 		isProductionMode(){
 			return coreLoader.getEnvironment() === "production";
