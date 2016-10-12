@@ -34,6 +34,19 @@ class App extends AbstractComponent{
 			res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Content-Length, X-Requested-With, Pragma, Cache-Control");
 			res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
 
+			/*
+				Add  query string parser; This will parse any query values for a json structure and convert to object.
+			 */
+			if(req.query) {
+				_.each(req.query, (value, name)=>{
+					try {
+						req.query[name] = JSON.parse(value);
+					} catch(e){
+
+					}
+				})
+			}
+			
 			// intercept OPTIONS method
 			if ('OPTIONS' == req.method) {
 				res.sendStatus(200);
