@@ -8,7 +8,7 @@ import ComponentLoader from './core-components';
 import appRoot from 'app-root-path';
 var ScaffiConfig = require(path.join(appRoot.toString(), "scaffi-server.json"));
 
-const ENV_MODES = ["production", "development", "qa", "localhost", "prototype", "cli"];
+const ENV_MODES = ["production", "development", "qa", "localhost", "prototype", "ci"];
 
 class CoreLoader {
 	constructor(args) {
@@ -164,8 +164,8 @@ var returns = {
 		isPrototypeMode(){
 			return coreLoader.getEnvironment() === "prototype";
 		},
-		isCliMode(){
-			return coreLoader.getEnvironment() === "cli";
+		isCiMode(){
+			return coreLoader.getEnvironment() === "ci";
 		},
 		getEnvironment(){
 			return coreLoader.getEnvironment();
