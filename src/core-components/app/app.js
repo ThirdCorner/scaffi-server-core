@@ -28,8 +28,13 @@ class App extends AbstractComponent{
 				This is so cookies will work. We have to specify a specific address to get through CORS
 			 */
 			res.header('Access-Control-Allow-Credentials', true);
-			res.header("Access-Control-Allow-Origin", "http://localhost:" + this.getConfig("uiLocalhostPort"));
-
+			
+			/*
+				4000 4001 are from Scaffi start, browsersync is set to use those two ports
+			 */
+			
+			var origins = ["http://localhost:" + this.getConfig("uiLocalhostPort"),  "http://localhost:4000", "http://localhost:4001" ];
+			res.header("Access-Control-Allow-Origin", origins);
 
 			res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Content-Length, X-Requested-With, Pragma, Cache-Control");
 			res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS');
