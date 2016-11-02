@@ -21,7 +21,16 @@ class App extends AbstractComponent{
 	setupAppPresets(){
 		
 		var app = this.get();
-		app.use(cors());
+		
+		var whitelist = ['http://localhost:4000', 'http://localhost:4001'];
+		var corsOptions = {
+			origin: function(origin, callback){
+				var originIsWhitelisted = whitelist.indexOf(origin) !== -1;
+				callback(originIsWhitelisted ? null : 'Bad Request', originIsWhitelisted);
+			}
+		};
+		
+		app.use(cors(corsOptions));
 		/*
 			Tell frontend what's available for REST and hook into the OPTIONS resource
 		 */
