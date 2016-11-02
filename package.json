@@ -13,6 +13,7 @@
     "bull": "^1.0.0-rc1",
     "connect-redis": "^3.0.2",
     "consolidate": "^0.14.0",
+    "cors": "^2.8.1",
     "debug": "^2.2.0",
     "epilogue": "github:dchester/epilogue",
     "express": "^4.13.4",
