@@ -32,6 +32,22 @@ class App extends AbstractComponent{
 		};
 		
 		app.use(cors(corsOptions));
+
+		/*
+			Make sure that deep nested objects are turned into objects
+		 */
+		app.use((req, res, next)=>{
+			if(req.query) {
+				_.each(query, (value, name)=> {
+					try {
+						req.query[name] = JSON.parse(value);
+					} catch (e) {
+					}
+				});
+			}
+
+			next();
+		});
 		/*
 			Tell frontend what's available for REST and hook into the OPTIONS resource
 		 */
