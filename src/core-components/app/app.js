@@ -38,7 +38,7 @@ class App extends AbstractComponent{
 		 */
 		app.use((req, res, next)=>{
 			if(req.query) {
-				_.each(query, (value, name)=> {
+				_.each(req.query, (value, name)=> {
 					try {
 						req.query[name] = JSON.parse(value);
 					} catch (e) {
