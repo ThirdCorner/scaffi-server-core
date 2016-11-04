@@ -34,7 +34,11 @@ class App extends AbstractComponent{
 		var corsOptions = {
 			origin: function(origin, callback){
 				var originIsWhitelisted = whitelist.indexOf(origin) !== -1;
-				callback(originIsWhitelisted ? null : 'Bad Request', originIsWhitelisted);
+				var msg = 'Bad Request';
+				if(this.getConfig("environment") == "development" || this.getConfig("environment") == "localhost" || this.getConfig("environment") == "prototype") {
+					msg += "; CORS ISSUE; Origin is: " + origin;
+				}
+				callback(originIsWhitelisted ? null : msg, originIsWhitelisted);
 			},
 			credentials: true
 		};
