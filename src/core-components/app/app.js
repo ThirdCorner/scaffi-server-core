@@ -22,7 +22,15 @@ class App extends AbstractComponent{
 		
 		var app = this.get();
 		
-		var whitelist = ['http://localhost:4000', 'http://localhost:4001'];
+		var port = process.env.PORT || this.getParam("port");
+		if(!port) {
+			console.log("(reverting to serverLocalhostPort because no port was set)");
+			port = this.getConfig("serverLocalhostPort");
+		}
+		
+		port = this.normalizePort(port);
+		
+		var whitelist = ['http://localhost:4000', 'http://localhost:4001', 'http://localhost:' + port];
 		var corsOptions = {
 			origin: function(origin, callback){
 				var originIsWhitelisted = whitelist.indexOf(origin) !== -1;
@@ -99,13 +107,7 @@ class App extends AbstractComponent{
 		// 	}
 		// });
 		
-		var port = process.env.PORT || this.getParam("port");
-		if(!port) {
-			console.log("(reverting to serverLocalhostPort because no port was set)");
-			port = this.getConfig("serverLocalhostPort");
-		}
-
-		port = this.normalizePort(port);
+		
 		/*
 		 For Localhost
 		 */
