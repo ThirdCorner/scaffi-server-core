@@ -32,7 +32,7 @@ class App extends AbstractComponent{
 		
 		var whitelist = ['http://localhost:4000', 'http://localhost:4001', 'http://localhost:' + port.toString()];
 		var corsOptions = {
-			origin: function(origin, callback){
+			origin: (origin, callback)=>{
 				var originIsWhitelisted = whitelist.indexOf(origin) !== -1;
 				var msg = 'Bad Request';
 				if(this.getConfig("environment") == "development" || this.getConfig("environment") == "localhost" || this.getConfig("environment") == "prototype") {
