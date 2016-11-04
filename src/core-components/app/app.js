@@ -38,7 +38,7 @@ class App extends AbstractComponent{
 				if(this.getConfig("environment") == "development" || this.getConfig("environment") == "localhost" || this.getConfig("environment") == "prototype") {
 					msg += "; CORS ISSUE; Origin is: " + origin;
 				}
-				callback(originIsWhitelisted ? null : msg, originIsWhitelisted);
+				callback(originIsWhitelisted || !origin ? null : msg, originIsWhitelisted);
 			},
 			credentials: true
 		};
