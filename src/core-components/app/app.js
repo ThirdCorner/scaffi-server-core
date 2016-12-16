@@ -30,7 +30,7 @@ class App extends AbstractComponent{
 		
 		port = this.normalizePort(port);
 		
-		var whitelist = ['http://localhost:4000', 'http://localhost:4001', 'http://localhost:' + port.toString(), "file://"];
+		var whitelist = ['http://localhost:4000', 'http://localhost:4001', 'http://localhost:' + port.toString(), "file://", "gap://ready"];
 		var corsOptions = {
 			origin: (origin, callback)=>{
 				var originIsWhitelisted = whitelist.indexOf(origin) !== -1;
