@@ -31,11 +31,21 @@ class App extends AbstractComponent{
 		port = this.normalizePort(port);
 		
 		var whitelist = ['http://localhost:4000', 'http://localhost:4001', 'http://localhost:' + port.toString(), "file://", "gap://ready"];
+		if(this.getParam("whitelist")) {
+			var extraWhitelists = this.getParam("whitelist");
+			if(_.isString(extraWhitelists)) {
+				extraWhitelists = [extraWhitelists];
+			}
+			
+			if(_.isArray(extraWhitelists)) {
+				whitelist = whitelist.concat(extraWhitelists);
+			}
+		}
 		var corsOptions = {
 			origin: (origin, callback)=>{
 				var originIsWhitelisted = whitelist.indexOf(origin) !== -1;
 				var msg = 'Bad Request';
-				if(this.getConfig("environment") == "development" || this.getConfig("environment") == "localhost" || this.getConfig("environment") == "prototype") {
+				if(this.getConfig("environment") != "production") {
 					msg += "; CORS ISSUE; Origin is: " + origin;
 				}
 				callback(originIsWhitelisted || !origin ? null : msg, originIsWhitelisted);
