@@ -9,6 +9,8 @@ import bodyParser from 'body-parser';
 import _ from 'lodash';
 import cors from 'cors';
 
+var nodeIp = require("ip");
+
 class App extends AbstractComponent{
 	setup(){
 		this.setupApp();
@@ -41,6 +43,12 @@ class App extends AbstractComponent{
 				whitelist = whitelist.concat(extraWhitelists);
 			}
 		}
+		
+		if(this.getConfig("environment") == "localhost") {
+			whitelist.push("http://" + nodeIp.address() + ":" + port.toString());
+		}
+		
+		
 		var corsOptions = {
 			origin: (origin, callback)=>{
 				var originIsWhitelisted = whitelist.indexOf(origin) !== -1;
