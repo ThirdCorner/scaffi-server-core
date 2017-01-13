@@ -32,7 +32,12 @@ class App extends AbstractComponent{
 		
 		port = this.normalizePort(port);
 		
-		var whitelist = ['http://localhost:4000', 'http://localhost:4001', 'http://localhost:' + port.toString(), "file://", "gap://ready"];
+		var ports = ["4000", "4001", port.toString()];
+		var whitelist = ["file://", "gap://ready"];
+		_.each(ports, (p)=>{
+			whitelist.push("http://localhost:" + p);
+		});
+		
 		if(this.getParam("whitelist")) {
 			var extraWhitelists = this.getParam("whitelist");
 			if(_.isString(extraWhitelists)) {
@@ -45,7 +50,10 @@ class App extends AbstractComponent{
 		}
 		
 		if(this.getConfig("environment") == "localhost") {
-			whitelist.push("http://" + nodeIp.address() + ":" + port.toString());
+			_.each(ports, (p)=>{
+				whitelist.push("http://" + nodeIp.address() + ":" + p);
+			});
+			
 		}
 		
 		
