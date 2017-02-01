@@ -59,7 +59,14 @@ class App extends AbstractComponent{
 		
 		var corsOptions = {
 			origin: (origin, callback)=>{
-				var originIsWhitelisted = whitelist.indexOf(origin) !== -1;
+				var originIsWhitelisted = true;
+				/*
+					Param could be null or true, so
+				 */
+				if(this.getParam("enable-cors") === true) {
+					originIsWhitelisted = whitelist.indexOf(origin) !== -1;
+				}
+				
 				var msg = 'Bad Request';
 				if(this.getConfig("environment") != "production") {
 					msg += "; CORS ISSUE; Origin is: " + origin;
