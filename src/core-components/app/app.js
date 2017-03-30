@@ -73,7 +73,6 @@ class App extends AbstractComponent{
 				}
 				callback(originIsWhitelisted || !origin ? null : msg, originIsWhitelisted);
 			},
-			allowedHeaders: ["Content-Range"],
 			credentials: true,
 			headers: ["Content-Range"] // Need this for epilogue list ranges to pass to browser
 		};
@@ -92,6 +91,8 @@ class App extends AbstractComponent{
 					}
 				});
 			}
+			
+			res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Content-Length, X-Requested-With, Pragma, Cache-Control");
 
 			next();
 		});
