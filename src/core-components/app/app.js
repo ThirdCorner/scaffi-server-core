@@ -73,6 +73,7 @@ class App extends AbstractComponent{
 				}
 				callback(originIsWhitelisted || !origin ? null : msg, originIsWhitelisted);
 			},
+			allowedHeaders: ["Content-Range"],
 			credentials: true,
 			headers: ["Content-Range"] // Need this for epilogue list ranges to pass to browser
 		};
