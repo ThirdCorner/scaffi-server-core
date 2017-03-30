@@ -73,8 +73,11 @@ class App extends AbstractComponent{
 				}
 				callback(originIsWhitelisted || !origin ? null : msg, originIsWhitelisted);
 			},
+			/*
+				Content-Range is required for epilogue
+			 */
+			exposedHeaders: ["Access-Control-Allow-Credentials","Access-Control-Allow-Origins", "Cookie", "Access-Control-Allow-Headers", "Content-Type", "Authorization", "Content-Length", "X-Requested-With", "X-Forwarded-Proto", "Pragma", "Cache-Control", "Content-Range"],
 			credentials: true,
-			headers: ["Content-Range"] // Need this for epilogue list ranges to pass to browser
 		};
 		
 		app.use(cors(corsOptions));
@@ -92,7 +95,6 @@ class App extends AbstractComponent{
 				});
 			}
 			
-			res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Content-Length, Content-Range, X-Requested-With, Pragma, Cache-Control, x-iisnode-auth_user");
 
 			next();
 		});
