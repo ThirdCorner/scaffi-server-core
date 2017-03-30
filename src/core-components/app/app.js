@@ -92,7 +92,7 @@ class App extends AbstractComponent{
 				});
 			}
 			
-			res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Content-Length, X-Requested-With, Pragma, Cache-Control");
+			res.header("Access-Control-Allow-Headers", "Content-Type, Authorization, Content-Length, Content-Range, X-Requested-With, Pragma, Cache-Control, x-iisnode-auth_user");
 
 			next();
 		});
