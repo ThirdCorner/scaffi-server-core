@@ -80,7 +80,9 @@ class App extends AbstractComponent{
 			credentials: true,
 		};
 		
-		app.use(cors(corsOptions));
+		if(this.getConfig("enable-cors")) {
+			app.use(cors(corsOptions));
+		}
 
 		/*
 			Make sure that deep nested objects are turned into objects
