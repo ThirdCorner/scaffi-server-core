@@ -49,11 +49,10 @@ class App extends AbstractComponent{
 			}
 		}
 		
-		if(this.getConfig("environment") == "localhost") {
+		if(this.getConfig("environment") === "localhost") {
 			_.each(ports, (p)=>{
 				whitelist.push("http://" + nodeIp.address() + ":" + p);
 			});
-			
 		}
 		
 		
@@ -68,7 +67,7 @@ class App extends AbstractComponent{
 				}
 				
 				var msg = 'Bad Request';
-				if(this.getConfig("environment") != "production") {
+				if(this.getConfig("environment") !== "production") {
 					msg += "; CORS ISSUE; Origin is: " + origin;
 				}
 				callback(originIsWhitelisted || !origin ? null : msg, originIsWhitelisted);
@@ -80,7 +79,7 @@ class App extends AbstractComponent{
 			credentials: true,
 		};
 		
-		if(this.getConfig("enable-cors")) {
+		if(this.getConfig("enable-cors") || this.getConfig("environment") === "localhost") {
 			app.use(cors(corsOptions));
 		}
 
