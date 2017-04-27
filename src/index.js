@@ -147,7 +147,7 @@ var returns = {
 	},
 	config: {
 		getVersion(){
-			return coreLoader.getVersion;	
+			return coreLoader.getVersion();
 		},
 		isProductionMode(){
 			return coreLoader.getEnvironment() === "production";
