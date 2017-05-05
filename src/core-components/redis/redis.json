@@ -1,8 +1,0 @@
-{
-	"dependencies": [],
-	"params": {
-		"public": {},
-		"private": {}
-	},
-	"instructions": "You need to add Redis \n So make sure that happens"
-}

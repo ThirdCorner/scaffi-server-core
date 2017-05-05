@@ -1,7 +1,0 @@
-{
-	"dependencies": ["app", "server"],
-	"params": {
-		"public": {},
-		"private": {}
-	}
-}

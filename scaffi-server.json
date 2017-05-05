@@ -9,13 +9,12 @@
 		"columnNameStandard": "pascalCase",
 		"columnMultiWorkStandard": null,
 		"idCapitalizeStandard": "pascalCase",
-		"routeLowercaseStandard": true
+		"routeLowercaseStandard": true,
+		"environment": "localhost"
 	},
-	"components": {
-		"app": {},
+	"params": {
 		"sequelize": {
 			"dialect": "mssql"
-		},
-		"epilogue":{}
+		}
 	}
 }

@@ -1,14 +1,17 @@
 'use strict';
 
-import AbstractComponent from '../../extendables/abstract-component';
+import AbstractComponent from '../../classes/abstract-component';
 import socket from 'socket.io';
 
+import app from '../app/app';
+import server from '../server/server';
+
 class SocketIO extends AbstractComponent {
-	setup(app, server) {
-		var io = socket.listen(server);
+	setup() {
+		var io = socket.listen(server.get());
 		this.set(io);
 	}
 
 }
 
-export default SocketIO;
+export default new SocketIO();

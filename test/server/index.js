@@ -1,15 +1,23 @@
-require("babel-register")({
-	presets: [ 'es2015' ]
-});
 
-var path = require('path');
-var ScaffiCore = require("../../src/index");
+import ScaffiCore from "../../src/index.js";
+
+import ScaffiConfig from "../../scaffi-server.json";
+import ScaffiPrivate from "../../scaffi-server.private.json";
+
+import '../../components';
+import '../../models';
+import '../../routes/';
+import '../../services';
 
 ScaffiCore.initialize({
-	"components": {
-		"sequelize": {
-			"username": "admin2",
-			"password": "password2"
+	config: ScaffiConfig,
+	private: ScaffiPrivate,
+	override: {
+		"params": {
+			"sequelize": {
+				"username": "admin",
+				"password": "admin"
+			}
 		}
 	}
 });

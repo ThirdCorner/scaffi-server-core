@@ -1,104 +1,36 @@
 'use strict';
 
-import AbstractComponent from '../../extendables/abstract-component';
-import SequelizePackage from 'sequelize';
-import sequelizeFixtures from 'sequelize-fixtures';
 import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
+import SequelizePackage from 'sequelize';
+
+import AbstractComponent from '../../classes/abstract-component';
 
 class Sequelize extends AbstractComponent {
+	getClassName(){
+		return "sequelize";
+	}
 	setup() {
 
-		var db = {};
-		db.connection = this.setupDatabase();
-
-		db.connection.authenticate().then((errors)=>{
+		var db = this.setupDatabase();
+		db.authenticate().then((errors)=>{
 			if(!errors) {
 				console.log("==== DB CONNECTED ===")
 			}
 		});
-
-		db.DataTypes = SequelizePackage;
-
-		this.setupModels(db);
 		
 		this.set(db);
+		
+		db._modelParams = {};
 
-		var that = this;
-
-		if(this.getParam("sync") === true) {
-			db.connection.sync({force: true}).then(()=>{
-				console.log("### DB MODELS SYNCED ###");
-				var fixtures = [];
-				var idCounters = {};
-				try {
-					that.loadFiles(path.join(that.getBasePath(),"fixtures"), function(file, filename){
-						that._parseFixture(fixtures, idCounters, filename, file);
-						
-					});
-				} catch(e){
-					console.log(e);
-				}
-
-				// console.log(fixtures);
-				sequelizeFixtures.loadFixtures(fixtures, db).then(()=>{
-					console.log(`### You have been successfully seeded ###`);
-				});
-			});
-		}
 	}
-	_parseFixture(fixtures, idCounters, filename, file, parentName, parentValue) {
-		if(_.isFunction(file)){
-			file = file();
-		}
-		if(file.default) {
-			file = file.default;
-		}
-		if(!_.isArray(file)) {
-			console.log(file);
-			throw new Error(`Trying to load ${filename} as fixture load but file does not return an array`);
-		}
-
-		var name = filename;
-		if(filename.indexOf(".") !== -1) {
-			name = filename.substr(0, filename.indexOf("."));
-		}
-		var that = this;
-		if(!_.has(idCounters, name)) {
-			idCounters[name] = 0;
-		}
-		_.forEach(file, (item, key)=>{
-			/*
-				Need to abstract based on their id naming scheme
-			 */
-			idCounters[name]++;
-			var id = idCounters[name];
-			item.id = id;
-
-			if(parentName) {
-				item[parentName] = parentValue;
-			}
-
-			fixtures.push({
-				model: name,
-				data: item
-			});
-
-			/* see if item has any nested items */
-			_.forEach(item, (propValue, propName)=>{
-				if(_.isArray(propValue)) {
-					that._parseFixture(fixtures, idCounters, propName, propValue, name + "Id", id);
-				}
-			});
-
-		});
-		console.log(`~~~ Adding Fixture Data: ${filename} ~~~`);
-	}
+	
 	setupDatabase() {
+		var params = this.getParam("sequelize") || {};
 		var options = {
-			logging: this.getParam("logging") || false,
-			dialect: this.getParam('dialect'),
+			logging: params.logging || false,
+			dialect: params.dialect,
 			pool: {
 				max: 5,
 				min: 0,
@@ -115,76 +47,62 @@ class Sequelize extends AbstractComponent {
 			}
 		};
 
-		if(this.getParam("dialectOptions")){
-			options.dialectOptions = this.getParam("dialectOptions");
+		if(params.dialectOptions){
+			options.dialectOptions = params.dialectOptions;
 		} else {
 			options.dialectOptions = {};
 		}
 
 
-		if(this.getParam("define")) {
-			options.define = this.getParam("define");
+		if(params.define) {
+			options.define = params.define;
 		}
 
 
 
 
-		if(this.getParam("dialect") == "mssql") {
-			if (this.getParam("instance")) {
+		if(params.dialect == "mssql") {
+			if (params.instance) {
 				/*
 				 http://raathigesh.com/Connecting-To-MSSQL-with-Sequelize/
 				 */
 
-				options.dialectOptions.instanceName = this.getParam("instance");
+				options.dialectOptions.instanceName = params.instance;
 			}
-			if(this.getParam("domain")) {
-				options.dialectOptions.domain = this.getParam("domain");
+			if(params.domain) {
+				options.dialectOptions.domain = params.domain;
 			}
-			if(this.getParam("encrypt")) {
-				options.dialectOptions.encrypt = this.getParam("encrypt");
+			if(params.encrypt) {
+				options.dialectOptions.encrypt = params.encrypt;
 			}
 		}
-		if(this.getParam('host')) {
-			options.host =  this.getParam('host');
+		if(params.host) {
+			options.host = params.host;
 		}
-		if(this.getParam("port")) {
-			options.port = this.getParam("port");
+		if(params.port) {
+			options.port = params.port;
 		}
 		
 
-		if (this.getParam("connectionString")) {
-			return new SequelizePackage(this.getParam("connectionString"), options)
+		if (params.connectionString) {
+			return new SequelizePackage(params.connectionString, options)
 		} else {
-			return new SequelizePackage(this.getParam("databaseName"), this.getParam("username"), this.getParam("password"), options)
+			return new SequelizePackage(params.databaseName, params.username, params.password, options)
 		}
 
 
 
 	}
-	setupModels(db){
-		var that = this;
-		try {
-			fs
-				.readdirSync(path.join(this.getBasePath(), 'models'))
-				.filter(function (file) {
-					return (file.indexOf(".") !== 0) && (file !== "index.js");
-				})
-				.forEach(function (file) {
-					var model = db.connection.import(path.join(that.getBasePath(), 'models', file));
-					db[model.name] = model;
-				});
-
-			Object.keys(db).forEach(function (modelName) {
-				if ("associate" in db[modelName]) {
-					db[modelName].associate(db);
-				}
-			});
-		} catch(e) {
-			console.log("LOOKING FOR MODELS IN :", path.join(this.getBasePath(), 'models'));
-			console.log("ERROR:", e.message);
-			throw new Error("Trying to get models but can't load for sequelize. You sure you have a folder on at root?");
-		}
+	run(){
+		var db = this.get();
+		
+		_.each(db._modelParams, (data, name)=>{
+			if ("associate" in db[name]) {
+				db[name].associate(db);
+			}
+		});
+		
 	}
 }
 
-export default Sequelize;
+export default new Sequelize();

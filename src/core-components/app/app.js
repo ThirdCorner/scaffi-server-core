@@ -1,17 +1,20 @@
 'use strict';
 
-import AbstractComponent from '../../extendables/abstract-component';
-
+import AbstractComponent from '../../classes/abstract-component';
 
 import express from 'express';
 import path from 'path';
 import bodyParser from 'body-parser';
 import _ from 'lodash';
 import cors from 'cors';
+import appRoot from 'app-root-path';
 
 var nodeIp = require("ip");
 
 class App extends AbstractComponent{
+	getClassName(){
+		return "app";
+	}
 	setup(){
 		this.setupApp();
 		this.setupAppPresets();
@@ -161,8 +164,8 @@ class App extends AbstractComponent{
 		// uncomment after placing your favicon in /public
 		//app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 		//app.use(logger('dev'));
-		app.use(bodyParser.json({limit: this.getConfig('limit') || '50mb'}));
-		app.use(bodyParser.urlencoded({  limit: this.getConfig('limit') || '50mb', extended: false }));
+		app.use(bodyParser.json({limit: this.getConfig('transferLimit') || '50mb'}));
+		app.use(bodyParser.urlencoded({  limit: this.getConfig('transferLimit') || '50mb', extended: false }));
 		app.use(express.static(path.join(this.getBasePath(), "public")));
 
 		app.set('port', port);
@@ -233,5 +236,57 @@ class App extends AbstractComponent{
 		return false;
 	}
 	
+	run(){
+		
+		var router = express.Router();
+		
+		/* GET home page. */
+		router.get('/', function (req, res, next) {
+			res.sendFile(path.join(appRoot.toString(), 'public', 'index.html'));
+		});
+		
+		this.get().all("/api/*", (req, res)=>{
+			res.status(404).send({message: "Unknown Route"});
+		});
+		
+		/*
+		 All unknown routes, just send the index?????
+		 */
+		this.get().all('*', function (req, res, next) {
+			res.sendFile(path.join(appRoot.toString(), 'public', 'index.html'));
+		});
+		
+		// catch 404 and forward to error handler
+		this.get().use(function (req, res, next) {
+			var err = new Error('Not Found');
+			err.status = 404;
+			next(err);
+		});
+		
+		// error handlers
+		
+		// development error handler
+		// will print stacktrace
+		if (this.get().get('env') === 'development') {
+			this.get().use(function (err, req, res, next) {
+				res.status(err.status || 500);
+				res.send({
+					message: err.message,
+					error: err
+				});
+			});
+		}
+		
+		// production error handler
+		// no stacktraces leaked to user
+		this.get().use(function (err, req, res, next) {
+			res.status(err.status || 500);
+			res.send({
+				message: err.message,
+				error: err
+			});
+		});
+	}
+	
 }
-export default App;
+export default new App();

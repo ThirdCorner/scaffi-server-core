@@ -1,94 +1,81 @@
 'use strict';
 
-import AbstractComponent from '../../extendables/abstract-component';
 import epilogue from 'epilogue';
-import UiNotifyService from '../../services/ui-notify-service/ui-notify-service';
 import _ from 'lodash';
 import path from 'path';
 
-class Epilogue extends AbstractComponent {
-	setup(app, db){
-		
-		epilogue.initialize({
-			app: app,
-			sequelize: db.connection
-		});
+import app from '../app/app';
+import sequelize from '../sequelize/sequelize';
 
-		this.setupRoutes(app, db, epilogue);
-		this.setupErrorRouteOverrides(epilogue);
-		this.setupSocketRoutes(epilogue);
+import AbstractComponent from '../../classes/abstract-component';
+//import UiNotifyService from '../../services/ui-notify-service/ui-notify-service';
+
+class Epilogue extends AbstractComponent {
+	getClassName(){
+		return "epilogue";
+	}
+	setup(){
+		var db = sequelize.get();
+		epilogue.initialize({
+			app: app.get(),
+			sequelize: db
+		});
 		
 		this.set(epilogue);
+		
 	}
-	setupRoutes(app, db, epilogue) {
-		epilogue.routes = {}
-		this.loadFiles(path.join(this.getBasePath(), 'routes', 'epilogue'),(loadedFile) => {
-			var routeModel = loadedFile(db, epilogue);
-			epilogue.routes[routeModel.model.name] = routeModel;
-		}) ;
-	}
-	setupErrorRouteOverrides(epilogue){
-		if(!epilogue.routes) {
-			return true;
-		}
+	setupErrorRouteOverride(route){
+
 		var milestones = ["create", "delete", "list", "read", "update"];
-		_.each(epilogue.routes, (route, namespace)=> {
-			_.each(milestones, (name)=>{
+		_.each(milestones, (name)=>{
+			route.controllers[name].error = (req, res, error)=> {
+				if(error.cause) {
+					console.log(error.cause);
+				}
+				
+				console.log(error.stack);
+				res.sendError(error.message, error.cause || error.stack);
+			};
 
-				route.controllers[name].error = (req, res, error)=> {
-					if(error.cause) {
-						console.log(error.cause);
-					}
-					
-					console.log(error.stack);
-					res.sendError(error.message, error.cause || error.stack);
-				};
-
-			});
-		}, this);
+		});
 	}
-	setupSocketRoutes(epilogue) {
-		if(!epilogue.routes) {
-			return true;
-		}
-
-		_.each(epilogue.routes, (route, namespace)=>{
-			
-			/*
-				Stringify any non-scalars before they hit the DB
-			 */
-			route.create.write.before(function(req, res, context){
-				_.forEach(req.body, (value, name)=>{
-					if(_.isObject(value)) {
-						req.body[name] = JSON.stringify(value);
-					} 
-				});
-				return context.continue;
-			});
-			route.update.write.before(function(req, res, context){
-				_.forEach(req.body, (value, name)=>{
-					if(_.isObject(value)) {
-						req.body[name] = JSON.stringify(value);
-					}
-				});
-				return context.continue;
-			});
-			
-			route.update.send.before(function(req, res, context){
-				UiNotifyService.emitUpdate(namespace, context.attributes.id, context.attributes);
-				return context.continue;
-			});
-			route.create.send.before(function(req, res, context){
-				UiNotifyService.emitCreate(namespace, context.attributes);
-				return context.continue;
-			});
-			route.delete.send.before(function(req, res, context){
-				UiNotifyService.emitDelete(namespace, context.criteria.id, true);
-				return context.continue;
-			});
-		}, this);
-	}
+	// setupSocketRoute(route) {
+	// 	var namespace = route.model.name;
+	//
+	// 	/*
+	// 		Stringify any non-scalars before they hit the DB
+	// 	 */
+	// 	route.create.write.before(function(req, res, context){
+	// 		_.forEach(req.body, (value, name)=>{
+	// 			if(_.isObject(value)) {
+	// 				req.body[name] = JSON.stringify(value);
+	// 			}
+	// 		});
+	// 		return context.continue;
+	// 	});
+	// 	route.update.write.before(function(req, res, context){
+	// 		_.forEach(req.body, (value, name)=>{
+	// 			if(_.isObject(value)) {
+	// 				req.body[name] = JSON.stringify(value);
+	// 			}
+	// 		});
+	// 		return context.continue;
+	// 	});
+	//
+	// 	route.update.send.before(function(req, res, context){
+	// 		UiNotifyService.emitUpdate(namespace, context.attributes.id, context.attributes);
+	// 		return context.continue;
+	// 	});
+	// 	route.create.send.before(function(req, res, context){
+	// 		UiNotifyService.emitCreate(namespace, context.attributes);
+	// 		return context.continue;
+	// 	});
+	// 	route.delete.send.before(function(req, res, context){
+	// 		UiNotifyService.emitDelete(namespace, context.criteria.id, true);
+	// 		return context.continue;
+	// 	});
+	// }
 }
 
-export default Epilogue;
+export default new Epilogue();
 

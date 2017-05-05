@@ -1,6 +1,6 @@
 'use strict';
 
-import AbstractService from '../../extendables/abstract-service';
+import AbstractService from '../../classes/abstract-service';
 
 class UiNotifyService extends AbstractService{
 	initialize(socket) {

@@ -2,16 +2,14 @@
 	"config":{
 		"environment": "development"
 	},
-	"components": {
+	"params": {
 		"sequelize": {
 			"host": "localhost",
-			"username": "admin",
-			"password": "admin",
+			"username": "admin2",
+			"password": "password",
 			"databaseName": "Test",
 			"instance": "sqlexpress"
-		}
-	},
-	"services":{
+		},
 		"test-service": {
 			"name": "Jim"
 		}

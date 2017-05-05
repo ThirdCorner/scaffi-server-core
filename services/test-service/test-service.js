@@ -1,14 +1,14 @@
 'use strict';
 
-import AbstractService from '../../src/extendables/abstract-service';
+import AbstractService from '../../src/classes/abstract-service';
 
 class TestService extends AbstractService{
-	initialize(app) {
+	setup() {
 		console.log("test notify service!");
 	}
 	echo(text){
 		console.log("TEST SERVICE ECHO: ", text);
 	}
 }
-var Service = new TestService();
-export default Service;
+
+export default new TestService();

@@ -6,3 +6,5 @@ models/
 fitures/
 dist/
 components/
+public/
+test-server.js

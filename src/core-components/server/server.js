@@ -1,18 +1,22 @@
 'use strict';
 
-import AbstractComponent from '../../extendables/abstract-component';
+import AbstractComponent from '../../classes/abstract-component';
 import http from 'http';
 import debug from 'debug';
 
+import app from '../app/app';
 
 class Server extends AbstractComponent {
-	setup(app){
-		var server = http.createServer(app);
+	getClassName(){
+		return "server";
+	}
+	setup(){
+		var server = http.createServer(app.get());
 		this.set(server);
 	}
-	run(app){
+	run(){
 		
-		app.use(function(err, req, res, next){
+		app.get().use(function(err, req, res, next){
 			console.log("ERROR", err.stack);
 			res.status(500).send(err);
 		});
@@ -23,7 +27,7 @@ class Server extends AbstractComponent {
 		});
 
 		var server = this.get();
-		var port = app.get("port");
+		var port = app.get().get("port");
 
 		server.listen(port);
 		server.on('error', (error) => {
@@ -49,6 +53,7 @@ class Server extends AbstractComponent {
 					throw error;
 			}
 		});
+		console.log("SERVER RUN");
 		server.on('listening', () => {
 			var addr = server.address();
 			var bind = typeof addr === 'string'
@@ -62,4 +67,4 @@ class Server extends AbstractComponent {
 }
 
 
-export default Server;
+export default new Server();

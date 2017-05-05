@@ -1,7 +1,2 @@
-
-module.exports = function(app, router){
-	router.get('/api/test2', (req, res, next)=>{
-		throw new Error("tototo");
-	});
-
-}
+import './test/test.route.js';
+import './test2/test2.route.js';

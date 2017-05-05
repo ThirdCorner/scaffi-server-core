@@ -1,12 +1,17 @@
 'use strict';
 
 import _ from 'lodash';
-import path from 'path';
-import fs from 'fs';
-import ComponentLoader from './core-components';
-
 import appRoot from 'app-root-path';
-var ScaffiConfig = require(path.join(appRoot.toString(), "scaffi-server.json"));
+
+import InstanceManager from './modules/instance-manager';
+
+/*
+	Core Components
+ */
+import app from './core-components/app/app';
+import server from './core-components/server/server';
+import sequelize from './core-components/sequelize/sequelize';
+import epilogue from './core-components/epilogue/epilogue';
 
 const ENV_MODES = ["production", "development", "qa", "localhost", "prototype", "ci"];
 
@@ -17,48 +22,35 @@ class CoreLoader {
 			Get base path
 		 */
 
-		var overloadConfig = args || {};
+		var config = args || {};
 		
-		if(!_.isObject(ScaffiConfig)) {
-			throw new Error("scaffi-server.json is not in the proper format. Is it in the basepath of your server app?");
+		if(!_.has(config, "config")) {
+			throw new Error("Server needs an object passed to it with a config properyt.");
 		}
-
+		
+		
 		this.basePath = appRoot.toString();
 		this.config = {};
-		this.loadConfig(overloadConfig);
+		this.loadConfig(config);
 		this.loadComponents();
 
 	}
-	loadConfig(overloadConfig){
-
-		if(!ScaffiConfig.components) {
-			throw new Error("Your scaffi-server.json file is not in the proper format. Needs a components property.");
-		}
-
-		var required = {
-			app: {
-
-			},
-			server: {
-
-			},
-			router: {
-
+	loadConfig(config){
+	
+		var mainProps = ["config", "private", "override"];
+		_.each(mainProps, function(name){
+			if(!_.has(config, name)) {
+				config[name] = {};
 			}
-
-		};
-		_.each(required, (obj, name)=>{
-			if(!_.has(ScaffiConfig.components, name)) {
-				ScaffiConfig.components[name] = obj;   
+			
+			if(!_.has(config[name], "params")) {
+				config[name].params = {};
+			}
+			
+			if(!_.has(config[name], "config")) {
+				config[name].config = {};
 			}
 		});
-
-		var config = ScaffiConfig;
-
-		var privateConfig;
-		try{
-			privateConfig = require(path.join(appRoot.toString(), "scaffi-server.private.json"));
-		}catch(e){}
 
 		/*
 			We do the overloadConfig first because this is stuff passed through the injection point from the app.
@@ -73,19 +65,11 @@ class CoreLoader {
 				in JSON because you can't say process.env.PORT in a json, so we'll do it here
 
 		 */
+		
+		this.config = _.merge({}, config.config, config.private, config.override);
 
-		this.combineConfigs(config, overloadConfig, "config");
-		this.combineConfigs(config, overloadConfig, "components");
-		this.combineConfigs(config, overloadConfig, "services");
-
-		if(privateConfig){
-			this.combineConfigs(config, privateConfig, "config");
-			this.combineConfigs(config, privateConfig, "components");
-			this.combineConfigs(config, privateConfig, "services");
-		}
-
-		this.config = config;
-
+		console.log("CONFIG", this.config);
+		
 		if(!this.config.config.environment){
 			throw new Error("config.environment is not provided. Scaffi doesn't know to do prototype or not.");
 		}
@@ -94,28 +78,6 @@ class CoreLoader {
 			throw new Error("Invalid environment supplied: " + this.config.config.environment + ". Expect one of the following: " + ENV_MODES.join(", ") );
 		}
 
-	}
-	combineConfigs(config, privateConfig, propName) {
-
-		if(privateConfig[propName]){
-			if(!_.has(config, propName)) {
-				config[propName] = {};
-			}
-			_.each(privateConfig[propName], (item, componentName) =>{
-				if(item && !_.isObject(item)){
-					config[propName][componentName] = item;
-				}
-				else if(item && _.isObject(item)) {
-					_.each(item, (propValue, innerPropName)=>{
-						if(!_.has(config[propName],  componentName)){
-							config[propName][componentName] = {};
-						}
-
-						config[propName][componentName][innerPropName] = propValue;
-					});
-				}
-			})
-		}
 	}
 	getVersion(){
 		return this.config.config.version || "???";
@@ -131,10 +93,8 @@ class CoreLoader {
 		return null;
 	}
 	loadComponents(){
-		var components = new ComponentLoader({
-			baseDir: this.basePath,
-			config: this.config
-		});
+		
+		InstanceManager.setupInstances(this.basePath, this.config);
 		
 		console.log("========= RUNNING MODE: " + this.getEnvironment() + " =========");
 		console.log("````````` VERSION: " + this.getVersion() + "`````````");
@@ -179,50 +139,19 @@ var returns = {
 		}
 
 	},
-	Extends: {},
-	Services: {}
+
 };
 
-/*
-	Add extendables to obj
- */
-fs
-	.readdirSync(path.join(__dirname, "extendables"))
-	.forEach((file)=>{
+import AbstractComponent from './classes/abstract-component';
+import AbstractRoute from './classes/abstract-route';
+import AbstractEpilogueRoute from './classes/abstract-epilogue-route';
+import AbstractService from './classes/abstract-service';
+import AbstractModel from './classes/abstract-model';
 
-		var extendClass = require(path.join(__dirname, "extendables", file)).default;
-		file = file.substr(0, file.indexOf(".js"));
+//import UiNotifyService from './services/ui-notify-service/ui-notify-service';
 
-		var split = file.split("-");
-		var filename = "";
-		_.each(split, bit=>{
-			filename += _.capitalize(bit)
-		});
-
-		returns.Extends[filename] = extendClass;
-	});
-
-/*
-	Add services to obj
- */
-
-fs
-	.readdirSync(path.join(__dirname, "services"))
-	.forEach((file)=>{
-
-		var extendClass = require(path.join(__dirname, "services", file, file));
-
-
-		var split = file.split("-");
-		var filename = "";
-		_.each(split, bit=>{
-			filename += _.capitalize(bit)
-		});
-
-		// console.log(filename);
-
-		returns.Services[filename] = extendClass;
-	});
-
-
-module.exports = returns;
+export default returns;
+export {
+	app, server, sequelize, epilogue,
+	AbstractComponent, AbstractRoute, AbstractEpilogueRoute, AbstractService, AbstractModel
+}
