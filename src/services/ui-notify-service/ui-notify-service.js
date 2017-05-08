@@ -3,7 +3,7 @@
 import AbstractService from '../../classes/abstract-service';
 
 class UiNotifyService extends AbstractService{
-	initialize(socket) {
+	setup(socket) {
 		this.socket = socket;
 	}
 	
