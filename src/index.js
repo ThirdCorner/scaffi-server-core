@@ -67,8 +67,6 @@ class CoreLoader {
 		 */
 		
 		this.config = _.merge({}, config.config, config.private, config.override);
-
-		console.log("CONFIG", this.config);
 		
 		if(!this.config.config.environment){
 			throw new Error("config.environment is not provided. Scaffi doesn't know to do prototype or not.");
@@ -98,6 +96,10 @@ class CoreLoader {
 		
 		console.log("========= RUNNING MODE: " + this.getEnvironment() + " =========");
 		console.log("````````` VERSION: " + this.getVersion() + "`````````");
+		
+		if(this.config.config && this.config.config.debug === true) {
+			console.log("Merged Config", this.config);
+		}
 	}
 }
 var coreLoader;
