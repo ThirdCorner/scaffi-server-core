@@ -38,6 +38,23 @@ class Epilogue extends AbstractComponent {
 			};
 
 		});
+		
+		route.create.write.before(function(req, res, context){
+			_.forEach(req.body, (value, name)=>{
+				if(_.isObject(value)) {
+					req.body[name] = JSON.stringify(value);
+				}
+			});
+			return context.continue;
+		});
+		route.update.write.before(function(req, res, context){
+			_.forEach(req.body, (value, name)=>{
+				if(_.isObject(value)) {
+					req.body[name] = JSON.stringify(value);
+				}
+			});
+			return context.continue;
+		});
 	}
 	// setupSocketRoute(route) {
 	// 	var namespace = route.model.name;
